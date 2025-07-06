@@ -1,0 +1,22 @@
+.browse-btn::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 200%;
+  height: 100%;
+  background-color: #954c2e;
+  border-radius: 0.75rem; /* Match Tailwind's rounded-lg */
+  transform: translateX(-50%) scaleY(0);
+  transform-origin: bottom;
+  transition: transform 0.4s ease;
+  z-index: 0;
+}
+
+.browse-btn:hover::before {
+  transform: translateX(-50%) scaleY(1);
+}
+
+.browse-btn:hover span {
+  color: #fff;
+}
