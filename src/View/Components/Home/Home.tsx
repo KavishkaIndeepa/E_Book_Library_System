@@ -105,6 +105,11 @@ const books = [
 ];
 
 export default function Home() {
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
   const [activeIndex, setActiveIndex] = useState(null);
 
   const toggleAccordion = (index: any) => {
@@ -138,7 +143,7 @@ export default function Home() {
   };
 
   return (
-    <div>
+    <div className="mt-16 mb-10">
       <div className="w-full h-auto lg:h-screen mt-8 md:mt-12 px-4 md:px-8 flex items-center mb-8 lg:mb-0 ">
         {/* Main Container */}
         <div className="w-full max-w-6xl rounded-2xl flex flex-col md:flex-row overflow-hidden">
