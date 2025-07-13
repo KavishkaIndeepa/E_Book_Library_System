@@ -14,14 +14,13 @@ export default function About() {
       {/* Hero Section */}
       <div className="w-full bg-white h-auto lg:h-screen mt-8 md:mt-12 px-4 md:px-8 flex flex-col-reverse lg:flex-row items-center gap-10">
         {/* Left Section - Image */}
-        <div className="relative w-full lg:w-1/2">
-          <img
-            src={Main}
-            alt="Woman reading book"
-            className="rounded-lg w-full object-cover h-[300px] sm:h-[400px] lg:h-[90%]"
-          />
-        </div>
-
+        <div className="w-full md:w-1/2 flex justify-center items-center">
+            <img
+              src={Main}
+              alt="Bookshelf"
+              className="w-full h-auto max-h-[500px] object-cover rounded-lg shadow-lg"
+            />
+          </div>
         {/* Right Section - Text */}
         <div className="w-full lg:w-1/2 text-center lg:text-left">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">

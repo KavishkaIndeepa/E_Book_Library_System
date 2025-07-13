@@ -16,8 +16,7 @@ export default function Main() {
       <Route path='/library' Component={Library}></Route>
       <Route path='/blog' Component={Blog}></Route>
       <Route path='/contact' Component={Contact}></Route>
-      <Route path='/login' Component={Login}></Route>
-      <Route path='/signup' Component={SignUp}></Route>
+
     </Routes>
   )
 }

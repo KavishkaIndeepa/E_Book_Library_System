@@ -157,7 +157,7 @@ export default function Library() {
   );
 
   return (
-    <div className="mt-28 md:mt-36 mb-10 font-sans bg-white text-black">
+    <div className="mt-28 md:mt-24 mb-10 font-sans bg-white text-black">
       {/* Hero Section */}
       <div
         className="relative w-full h-[300px] md:h-[400px] overflow-hidden mt-12 flex items-center justify-center"

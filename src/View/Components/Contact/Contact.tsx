@@ -36,10 +36,10 @@ export default function ContactForm() {
   };
 
   return (
-    <div className="mt-28 md:mt-36 font-sans bg-white text-black">
+    <div className="mt-22 md:mt-24 mb-10 font-sans bg-white text-black">
       {/* Hero Section */}
       <div
-        className="relative w-full h-[300px] md:h-[400px] overflow-hidden mt-12 flex items-center justify-center"
+        className="relative w-full h-[300px] md:h-[400px] overflow-hidden mt-12 mb-8 flex items-center justify-center"
         style={{
           backgroundImage: `url(${Hero})`,
           backgroundSize: "cover",
@@ -61,7 +61,7 @@ export default function ContactForm() {
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto px-6 md:px-16 pt-10 bg-white shadow-2xl rounded-2xl pb-5">
+      <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto px-6 md:px-16 mt-10 bg-white shadow-2xl rounded-2xl pb-5">
         {/* Contact Form */}
         <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8 w-full">
           <div>
@@ -73,7 +73,7 @@ export default function ContactForm() {
               onChange={handleChange}
               required
               placeholder="Full Name"
-              className="w-full border border-gray-400 px-4 py-3 rounded focus:outline-none focus:ring-2 focus:ring-yellow-600"
+              className="w-full border border-gray-400 px-4 py-3 rounded focus:outline-none focus:ring-2 focus:ring-[#954c2e]"
             />
           </div>
           <div>
@@ -85,7 +85,7 @@ export default function ContactForm() {
               onChange={handleChange}
               required
               placeholder="Email Address"
-              className="w-full border border-gray-400 px-4 py-3 rounded focus:outline-none focus:ring-2 focus:ring-yellow-600"
+              className="w-full border border-gray-400 px-4 py-3 rounded focus:outline-none focus:ring-2 focus:ring-[#954c2e]"
             />
           </div>
           <div>
@@ -97,7 +97,7 @@ export default function ContactForm() {
               onChange={handleChange}
               required
               placeholder="Subject"
-              className="w-full border border-gray-400 px-4 py-3 rounded focus:outline-none focus:ring-2 focus:ring-yellow-600"
+              className="w-full border border-gray-400 px-4 py-3 rounded focus:outline-none focus:ring-2 focus:ring-[#954c2e]"
             />
           </div>
           <div>
@@ -109,12 +109,12 @@ export default function ContactForm() {
               rows={5}
               required
               placeholder="Message"
-              className="w-full border border-gray-400 px-4 py-3 rounded focus:outline-none focus:ring-2 focus:ring-yellow-600"
+              className="w-full border border-gray-400 px-4 py-3 rounded focus:outline-none focus:ring-2 focus:ring-[#954c2e]"
             ></textarea>
           </div>
           <button
             type="submit"
-            className="bg-yellow-600 hover:bg-yellow-700 text-white font-semibold px-6 py-3 rounded transition duration-300"
+            className="bg-[#954c2e] hover:bg-[#421f11] text-white font-semibold px-6 py-3 rounded transition duration-300"
           >
             SEND MESSAGE
           </button>
@@ -123,7 +123,7 @@ export default function ContactForm() {
         {/* Contact Info */}
         <div className="space-y-8 ">
           <div>
-            <p className="text-yellow-600 font-semibold">Contact Us</p>
+            <p className="text-[#954c2e] font-semibold">Contact Us</p>
             <h2 className="text-3xl font-bold mt-1 mb-4">Get In Touch</h2>
             <p className="text-gray-600">
               Feel free to reach out for any queries or assistance. We're here
@@ -135,7 +135,7 @@ export default function ContactForm() {
             <div className="flex items-start gap-4">
               <FontAwesomeIcon
                 icon={faPhone}
-                className="text-yellow-600 mt-1"
+                className="text-[#954c2e] mt-1"
               />
               <div>
                 <p className="font-semibold">Call Us</p>
@@ -146,7 +146,7 @@ export default function ContactForm() {
             <div className="flex items-start gap-4">
               <FontAwesomeIcon
                 icon={faEnvelope}
-                className="text-yellow-600 mt-1"
+                className="text-[#954c2e] mt-1"
               />
               <div>
                 <p className="font-semibold">Email Us</p>
@@ -157,7 +157,7 @@ export default function ContactForm() {
             <div className="flex items-start gap-4">
               <FontAwesomeIcon
                 icon={faGlobe}
-                className="text-yellow-600 mt-1"
+                className="text-[#954c2e] mt-1"
               />
               <div>
                 <p className="font-semibold">Website</p>
@@ -165,10 +165,10 @@ export default function ContactForm() {
               </div>
             </div>
 
-            <div className="flex items-start gap-4">
+            {/* <div className="flex items-start gap-4">
               <FontAwesomeIcon
                 icon={faMapMarkerAlt}
-                className="text-yellow-600 mt-1"
+                className="text-[#954c2e] mt-1"
               />
               <div>
                 <p className="font-semibold">Address</p>
@@ -176,38 +176,27 @@ export default function ContactForm() {
                   99 Irving St, Big City, PNU 23456
                 </p>
               </div>
-            </div>
+            </div> */}
           </div>
 
           <div className="pt-6">
             <p className="font-semibold mb-3">Follow Us On</p>
             <div className="flex gap-4">
-              <a href="#" className="text-yellow-600 hover:text-yellow-800 ">
+              <a href="#" className="text-[#3352ff] hover:text-[#31419c] text-4xl">
                 <FontAwesomeIcon icon={faFacebookF} />
               </a>
-              <a href="#" className="text-yellow-600 hover:text-yellow-800">
+              <a href="#" className="text-[#3352ff] hover:text-[#31419c] text-4xl">
                 <FontAwesomeIcon icon={faTwitter} />
               </a>
-              <a href="#" className="text-yellow-600 hover:text-yellow-800">
+              <a href="#" className="text-[#ff3535] hover:text-[#d11313] text-4xl">
                 <FontAwesomeIcon icon={faInstagram} />
               </a>
-              <a href="#" className="text-yellow-600 hover:text-yellow-800">
+              <a href="#" className="text-[#3352ff] hover:text-[#31419c] text-4xl">
                 <FontAwesomeIcon icon={faLinkedinIn} />
               </a>
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Map Section */}
-      <div className="mt-16">
-        <iframe
-          title="Google Map"
-          className="w-full h-[400px] rounded-xl shadow-lg"
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d243646.88226524745!2d-0.5103752668700173!3d51.28676018153788!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4876054d3a1b8c37%3A0xf5c58bbd31f0bb84!2sLondon%2C%20UK!5e0!3m2!1sen!2slk!4v1720501112345!5m2!1sen!2slk"
-          loading="lazy"
-          allowFullScreen
-        ></iframe>
       </div>
     </div>
   );

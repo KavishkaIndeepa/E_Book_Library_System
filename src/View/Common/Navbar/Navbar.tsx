@@ -23,58 +23,44 @@ export default function Navbar() {
     <header
       className={`w-full fixed top-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "backdrop-blur-md bg-white/20 text-black shadow-md"
+          ? "md:backdrop-blur-md md:bg-white/20 bg-white text-black shadow-md"
           : "bg-transparent text-black"
       }`}
     >
-
       {/* Desktop view */}
-      <div className="hidden md:flex flex-col shadow-md shadow-[#f1a485]">
-        {/* Top contact/info bar */}
-        <div className="flex justify-between items-center px-6 py-2 border-b border-[#954c2e]">
-          <div className="flex items-center space-x-4">
-            <span>+011 234 567 89</span>
-            <a href="mailto:contact@domain.com" className="hover:underline">
-              contact@domain.com
-            </a>
-          </div>
-          <div className="flex space-x-4 items-center text-sm">
-            <Link to="/login" className="hover:underline">
-              Login
-            </Link>
-            <span>|</span>
-            <Link to="/signup" className="hover:underline">
-              Sign up
-            </Link>
-          </div>
+      <div className="hidden md:flex justify-between items-center px-6 py-4 shadow-md shadow-[#f1a485]">
+        {/* Left - Logo */}
+        <div className="flex items-center space-x-4">
+          <img src={Logo} alt="Logo" className="h-16" />
         </div>
 
-        {/* Main navigation bar */}
-        <div className="flex justify-between items-center px-6 py-4">
-          {/* Left - Logo */}
-          <div className="flex items-center space-x-4">
-            <img src={Logo} alt="Logo" className="h-16" />
-            {/* <p className="text-xl font-bold text-[#954c2e]">E-Book</p> */}
-          </div>
+        {/* Middle - Nav Links */}
+        <ul className="flex space-x-6 text-lg font-poppins">
+          <li>
+            <Link to="/">Home</Link>
+          </li>
+          <li>
+            <Link to="/about">About</Link>
+          </li>
+          <li>
+            <Link to="/library">Library</Link>
+          </li>
+          <li>
+            <Link to="/blog">Blog</Link>
+          </li>
+          <li>
+            <Link to="/contact">Contact</Link>
+          </li>
+        </ul>
 
-          {/* Right - Nav Links */}
-          <ul className="flex space-x-6 text-lg font-poppins">
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <Link to="/about">About</Link>
-            </li>
-            <li>
-              <Link to="/library">Library</Link>
-            </li>
-            <li>
-              <Link to="/blog">Blog</Link>
-            </li>
-            <li>
-              <Link to="/contact">Contact</Link>
-            </li>
-          </ul>
+        {/* Right - Login */}
+        <div>
+          <Link
+            to="/login"
+            className="ml-6 text-lg hover:underline font-medium"
+          >
+            Login
+          </Link>
         </div>
       </div>
 
@@ -119,20 +105,13 @@ export default function Navbar() {
             Contact
           </Link>
         </nav>
-        <div className="px-4 mt-6 flex flex-col space-y-2">
+        <div className="px-4 mt-6">
           <Link
             to="/login"
-            className="py-2 px-4 border rounded text-center hover:bg-gray-100"
+            className="py-2 px-4 border rounded text-center hover:bg-gray-100 block"
             onClick={toggleMenu}
           >
             Login
-          </Link>
-          <Link
-            to="/signup"
-            className="py-2 px-4 bg-purple-600 text-white rounded text-center hover:bg-purple-700"
-            onClick={toggleMenu}
-          >
-            Sign Up
           </Link>
         </div>
       </div>
