@@ -7,6 +7,7 @@ import Blog from '../../Components/Blog/Blog'
 import Contact from '../../Components/Contact/Contact'
 import Login from '../../Components/Login/Login'
 import SignUp from '../../Components/SignUp/SignUp'
+import BookDetail from '../../Components/Library/BookDetail'
 
 export default function Main() {
   return (
@@ -16,6 +17,7 @@ export default function Main() {
       <Route path='/library' Component={Library}></Route>
       <Route path='/blog' Component={Blog}></Route>
       <Route path='/contact' Component={Contact}></Route>
+      <Route path="/book/:id" element={<BookDetail />} />
 
     </Routes>
   )

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Hero from "../../../Assets/Images/Library/library.jpg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faHeart, faEye } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
 
 const categories = [
   "Arts & Photography",
@@ -12,7 +13,7 @@ const categories = [
   "Food & Drink",
 ];
 
-const books = [
+export const books = [
   {
     id: 1,
     title: "Simple Things You Save BOOK",
@@ -20,6 +21,18 @@ const books = [
       "https://i.pinimg.com/736x/0a/6c/89/0a6c89e4de84e74745c22a0d656e6e2d.jpg",
     price: "$120.00",
     categories: "Arts & Photography",
+    discription: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pulvinar, tortor quis pretium...",
+    meta: {
+      sku: "FTC1000B65D",
+      tags: "Design Low Book",
+      category: "Arts & Photography",
+      format: "Hardcover",
+      pages: 330,
+      publishYear: 2021,
+      language: "English",
+      century: "United States",
+      availability: "In Stock",
+    },
   },
   {
     id: 2,
@@ -28,6 +41,18 @@ const books = [
       "https://i.pinimg.com/736x/65/97/fa/6597fad2d2118ce25b3b2d2acb39a551.jpg",
     price: "$40.00",
     categories: "Biographies & Memoirs",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pulvinar, tortor quis pretium...",
+     meta: {
+      sku: "FTC1010B65D",
+      tags: "Design Low Book",
+      category: "Biographies & Memoirs",
+      format: "Hardcover",
+      pages: 330,
+      publishYear: 2021,
+      language: "English",
+      century: "United States",
+      availability: "In Stock",
+    },
   },
   {
     id: 3,
@@ -36,6 +61,18 @@ const books = [
       "https://i.pinimg.com/736x/47/3d/de/473dde63b19f2febc9ef6c6ab24969c7.jpg",
     price: "Free",
     categories: "Christian Books & Bibles",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pulvinar, tortor quis pretium...",
+     meta: {
+      sku: "FTC1020B65D",
+      tags: "Design Low Book",
+      category: "Christian Books & Bibles",
+      format: "Hardcover",
+      pages: 330,
+      publishYear: 2021,
+      language: "English",
+      century: "United States",
+      availability: "In Stock",
+    },
   },
   {
     id: 4,
@@ -44,6 +81,18 @@ const books = [
       "https://i.pinimg.com/736x/a0/50/40/a050401a6437cba929b52f0d5eb1438e.jpg",
     price: "Free",
     categories: "Research & Publishing Guides",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pulvinar, tortor quis pretium...",
+     meta: {
+      sku: "FTC1040B65D",
+      tags: "Design Low Book",
+      category: "Research & Publishing Guides",
+      format: "Hardcover",
+      pages: 330,
+      publishYear: 2021,
+      language: "English",
+      century: "United States",
+      availability: "In Stock",
+    },
   },
   {
     id: 5,
@@ -52,6 +101,18 @@ const books = [
       "https://i.pinimg.com/736x/f1/d5/30/f1d53025b4393715e43d14d3c12f481b.jpg",
     price: "Free",
     categories: "Sports & Outdoors",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pulvinar, tortor quis pretium...",
+      meta: {
+        sku: "FTC1050B65D",
+        tags: "Design Low Book",
+        category: "Sports & Outdoors",
+        format: "Hardcover",
+        pages: 330,
+        publishYear: 2021,
+        language: "English",
+        century: "United States",
+        availability: "In Stock",
+      }
   },
   {
     id: 6,
@@ -60,6 +121,18 @@ const books = [
       "https://i.pinimg.com/736x/73/46/8c/73468c412d2509c536f6a36184de75cb.jpg",
     price: "$20.00",
     categories: "Food & Drink",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pulvinar, tortor quis pretium...",
+     meta: {
+      sku: "FTC1060B65D",
+      tags: "Design Low Book",
+      category: "Food & Drink",
+      format: "Hardcover",
+      pages: 330,
+      publishYear: 2021,
+      language: "English",
+      century: "United States",
+      availability: "In Stock",
+    },
   },
   {
     id: 7,
@@ -68,6 +141,18 @@ const books = [
       "https://i.pinimg.com/736x/95/6f/9d/956f9dd0e5d0ec87344541547af64808.jpg",
     price: "Free",
     categories: "Arts & Photography",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pulvinar, tortor quis pretium...",
+     meta: {
+      sku: "FTC1070B65D",
+      tags: "Design Low Book",
+      category: "Arts & Photography",
+      format: "Hardcover",
+      pages: 330,
+      publishYear: 2021,
+      language: "English",
+      century: "United States",
+      availability: "In Stock",
+    },
   },
   {
     id: 8,
@@ -76,6 +161,18 @@ const books = [
       "https://i.pinimg.com/736x/5f/2c/56/5f2c56542421aeff4e87ab05d612fefe.jpg",
     price: "$60.00",
     categories: "Biographies & Memoirs",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pulvinar, tortor quis pretium...",
+     meta: {
+      sku: "FTC1080B65D",
+      tags: "Design Low Book",
+      category: "Biographies & Memoirs",
+      format: "Hardcover",
+      pages: 330,
+      publishYear: 2021,
+      language: "English",
+      century: "United States",
+      availability: "In Stock",
+    },
   },
   {
     id: 9,
@@ -84,6 +181,18 @@ const books = [
       "https://i.pinimg.com/736x/18/5e/9f/185e9f46b45d90f2301f1573aa3aa8d4.jpg",
     price: "$50.00",
     categories: "Christian Books & Bibles",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pulvinar, tortor quis pretium...",
+     meta: {
+      sku: "FTC1090B65D",
+      tags: "Design Low Book",
+      category: "Christian Books & Bibles",
+      format: "Hardcover",
+      pages: 330,
+      publishYear: 2021,
+      language: "English",
+      century: "United States",
+      availability: "In Stock",
+    },
   },
   {
     id: 10,
@@ -92,6 +201,18 @@ const books = [
       "https://i.pinimg.com/736x/82/86/32/8286321c9e9864c0299b16f106fdf47f.jpg",
     price: "Free",
     categories: "Research & Publishing Guides",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pulvinar, tortor quis pretium...",
+     meta: {
+      sku: "FTC1100B65D",
+      tags: "Design Low Book",
+      category: "Research & Publishing Guides",
+      format: "Hardcover",
+      pages: 330,
+      publishYear: 2021,
+      language: "English",
+      century: "United States",
+      availability: "In Stock",
+    },
   },
   {
     id: 11,
@@ -100,6 +221,18 @@ const books = [
       "https://i.pinimg.com/736x/82/86/32/8286321c9e9864c0299b16f106fdf47f.jpg",
     price: "Free",
     categories: "Sports & Outdoors",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pulvinar, tortor quis pretium...",
+     meta: {
+      sku: "FTC1110B65D",
+      tags: "Design Low Book",
+      category: "Sports & Outdoors",
+      format: "Hardcover",
+      pages: 330,
+      publishYear: 2021,
+      language: "English",
+      century: "United States",
+      availability: "In Stock",
+    },
   },
   {
     id: 12,
@@ -108,6 +241,18 @@ const books = [
       "https://i.pinimg.com/736x/82/86/32/8286321c9e9864c0299b16f106fdf47f.jpg",
     price: "$60.00",
     categories: "Food & Drink",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pulvinar, tortor quis pretium...",
+     meta: {
+      sku: "FTC1120B65D",
+      tags: "Design Low Book",
+      category: "Food & Drink",
+      format: "Hardcover",
+      pages: 330,
+      publishYear: 2021,
+      language: "English",
+      century: "United States",
+      availability: "In Stock",
+    },
   },
 ];
 
@@ -121,6 +266,7 @@ export default function Library() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [showOnly, setShowOnly] = useState("all");
   const [page, setPage] = useState(1);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const container = document.getElementById("book-grid");
@@ -311,8 +457,9 @@ export default function Library() {
               {paginatedBooks.length > 0 ? (
                 paginatedBooks.map((book: any) => (
                   <div
+                    onClick={() => navigate(`/book/${book.id}`)}
                     key={book.id}
-                    className="bg-white p-4 rounded-lg shadow hover:shadow-lg transition duration-300 relative group h-[360px] flex flex-col justify-between"
+                    className="cursor-pointer bg-white p-4 rounded-lg shadow hover:shadow-lg transition duration-300 relative group h-[360px] flex flex-col justify-between"
                   >
                     <img
                       src={book.image}
