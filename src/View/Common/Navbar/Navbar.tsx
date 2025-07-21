@@ -46,30 +46,64 @@ export default function Navbar() {
           <img src={Logo} alt="Logo" className="h-16" />
         </div>
         <ul className="flex space-x-6 text-lg font-poppins">
-          <li><Link to="/">Home</Link></li>
-          <li><Link to="/about">About</Link></li>
-          <li><Link to="/library">Library</Link></li>
-          <li><Link to="/blog">Blog</Link></li>
-          <li><Link to="/contact">Contact</Link></li>
+          <li>
+            <Link to="/">Home</Link>
+          </li>
+          <li>
+            <Link to="/about">About</Link>
+          </li>
+          <li>
+            <Link to="/library">Library</Link>
+          </li>
+          <li>
+            <Link to="/blog">Blog</Link>
+          </li>
+          <li>
+            <Link to="/contact">Contact</Link>
+          </li>
         </ul>
         <div className="relative">
           {user ? (
             <>
               <img
-                src={user.profileImage || `https://ui-avatars.com/api/?name=${user.name}`}
+                src={
+                  user.profileImage ||
+                  `https://ui-avatars.com/api/?name=${user.name}`
+                }
                 alt="Profile"
                 className="h-10 w-10 rounded-full border-2 border-white shadow-md cursor-pointer"
                 onClick={toggleDropdown}
               />
               {dropdownOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white text-black rounded-md shadow-lg z-50 overflow-hidden">
-                  <Link to="/dashboard" className="block px-4 py-2 hover:bg-gray-100" onClick={() => setDropdownOpen(false)}>Dashboard</Link>
-                  <button onClick={handleLogout} className="w-full text-left px-4 py-2 hover:bg-gray-100">Logout</button>
+                  <Link
+                    to={
+                      user?.role === "admin"
+                        ? "/admin-dashboard"
+                        : "/user-dashboard"
+                    }
+                    className="block px-4 py-2 hover:bg-gray-100"
+                    onClick={() => setDropdownOpen(false)}
+                  >
+                    Dashboard
+                  </Link>
+
+                  <button
+                    onClick={handleLogout}
+                    className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                  >
+                    Logout
+                  </button>
                 </div>
               )}
             </>
           ) : (
-            <Link to="/login" className="ml-6 text-lg hover:underline font-medium">Login</Link>
+            <Link
+              to="/login"
+              className="ml-6 text-lg hover:underline font-medium"
+            >
+              Login
+            </Link>
           )}
         </div>
       </div>
@@ -77,7 +111,11 @@ export default function Navbar() {
       {/* Mobile Navbar */}
       <div className="flex md:hidden justify-between items-center px-4 py-3 bg-white text-black shadow-md">
         <img src={Logo} alt="Logo" className="h-16" />
-        <FontAwesomeIcon icon={faBars} className="text-2xl cursor-pointer" onClick={toggleMenu} />
+        <FontAwesomeIcon
+          icon={faBars}
+          className="text-2xl cursor-pointer"
+          onClick={toggleMenu}
+        />
       </div>
 
       <div
@@ -87,35 +125,87 @@ export default function Navbar() {
       >
         <div className="flex justify-between items-center px-4 py-4 border-b">
           <h2 className="text-lg font-semibold">Menu</h2>
-          <FontAwesomeIcon icon={faTimes} className="text-xl cursor-pointer" onClick={toggleMenu} />
+          <FontAwesomeIcon
+            icon={faTimes}
+            className="text-xl cursor-pointer"
+            onClick={toggleMenu}
+          />
         </div>
         <nav className="flex flex-col p-4 space-y-4 text-base">
-          <Link to="/" onClick={toggleMenu}>Home</Link>
-          <Link to="/about" onClick={toggleMenu}>About</Link>
-          <Link to="/library" onClick={toggleMenu}>Library</Link>
-          <Link to="/blog" onClick={toggleMenu}>Blog</Link>
-          <Link to="/contact" onClick={toggleMenu}>Contact</Link>
+          <Link to="/" onClick={toggleMenu}>
+            Home
+          </Link>
+          <Link to="/about" onClick={toggleMenu}>
+            About
+          </Link>
+          <Link to="/library" onClick={toggleMenu}>
+            Library
+          </Link>
+          <Link to="/blog" onClick={toggleMenu}>
+            Blog
+          </Link>
+          <Link to="/contact" onClick={toggleMenu}>
+            Contact
+          </Link>
           {user ? (
             <>
               <hr className="my-2" />
               <div className="flex items-center space-x-3">
                 <img
-                  src={user.profileImage || `https://ui-avatars.com/api/?name=${user.name}`}
+                  src={
+                    user?.profileImage
+                      ? user.profileImage.startsWith("data:image")
+                        ? user.profileImage
+                        : `data:image/jpeg;base64,${user.profileImage}`
+                      : `https://ui-avatars.com/api/?name=${
+                          user?.name || "Guest"
+                        }`
+                  }
                   alt="Profile"
                   className="h-10 w-10 rounded-full border"
                 />
                 <span className="font-semibold">{user.name}</span>
               </div>
-              <Link to="/dashboard" className="mt-2" onClick={toggleMenu}>Dashboard</Link>
-              <button onClick={() => { handleLogout(); toggleMenu(); }} className="text-left">Logout</button>
+              <Link
+                to={
+                  user?.role === "admin"
+                    ? "/admin-dashboard"
+                    : "/user-dashboard"
+                }
+                className="mt-2"
+                onClick={toggleMenu}
+              >
+                Dashboard
+              </Link>
+
+              <button
+                onClick={() => {
+                  handleLogout();
+                  toggleMenu();
+                }}
+                className="text-left"
+              >
+                Logout
+              </button>
             </>
           ) : (
-            <Link to="/login" className="mt-4 py-2 px-4 border rounded text-center hover:bg-gray-100 block" onClick={toggleMenu}>Login</Link>
+            <Link
+              to="/login"
+              className="mt-4 py-2 px-4 border rounded text-center hover:bg-gray-100 block"
+              onClick={toggleMenu}
+            >
+              Login
+            </Link>
           )}
         </nav>
       </div>
 
-      {menuOpen && <div className="fixed inset-0 bg-black opacity-30 z-40" onClick={toggleMenu}></div>}
+      {menuOpen && (
+        <div
+          className="fixed inset-0 bg-black opacity-30 z-40"
+          onClick={toggleMenu}
+        ></div>
+      )}
     </header>
   );
 }

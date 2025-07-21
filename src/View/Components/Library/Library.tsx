@@ -3,6 +3,7 @@ import Hero from "../../../Assets/Images/Library/library.jpg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faHeart, faEye } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
+import { s } from "framer-motion/dist/types.d-Bq-Qm38R";
 
 const categories = [
   "Arts & Photography",
@@ -20,6 +21,7 @@ export const books = [
     image:
       "https://i.pinimg.com/736x/0a/6c/89/0a6c89e4de84e74745c22a0d656e6e2d.jpg",
     price: "$120.00",
+    story: "This book is a comprehensive guide to saving money and managing finances effectively. It covers various strategies and tips to help readers achieve financial stability and success.",
     categories: "Arts & Photography",
     discription: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pulvinar, tortor quis pretium...",
     meta: {
@@ -40,6 +42,7 @@ export const books = [
     image:
       "https://i.pinimg.com/736x/65/97/fa/6597fad2d2118ce25b3b2d2acb39a551.jpg",
     price: "$40.00",
+    story: "This book provides insights and strategies for dealing with difficult situations and challenges in life. It offers practical advice and real-life examples to help readers navigate through tough times.",
     categories: "Biographies & Memoirs",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pulvinar, tortor quis pretium...",
      meta: {
@@ -60,6 +63,7 @@ export const books = [
     image:
       "https://i.pinimg.com/736x/47/3d/de/473dde63b19f2febc9ef6c6ab24969c7.jpg",
     price: "Free",
+    story: "This book is a fantasy adventure that takes readers on a journey through a magical world filled with castles, dragons, and heroes. It explores themes of courage, friendship, and the power of imagination.",
     categories: "Christian Books & Bibles",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pulvinar, tortor quis pretium...",
      meta: {
@@ -80,6 +84,7 @@ export const books = [
     image:
       "https://i.pinimg.com/736x/a0/50/40/a050401a6437cba929b52f0d5eb1438e.jpg",
     price: "Free",
+    story: "This book delves into the secrets and mysteries of the past, uncovering hidden truths and forgotten stories. It combines historical research with engaging storytelling to bring history to life.",
     categories: "Research & Publishing Guides",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pulvinar, tortor quis pretium...",
      meta: {
@@ -100,6 +105,7 @@ export const books = [
     image:
       "https://i.pinimg.com/736x/f1/d5/30/f1d53025b4393715e43d14d3c12f481b.jpg",
     price: "Free",
+    story: "This book is a heartwarming tale of love and friendship, exploring the bond between two unique characters. It highlights the importance of compassion, understanding, and the beauty of human connections.",
     categories: "Sports & Outdoors",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pulvinar, tortor quis pretium...",
       meta: {
@@ -120,6 +126,7 @@ export const books = [
     image:
       "https://i.pinimg.com/736x/73/46/8c/73468c412d2509c536f6a36184de75cb.jpg",
     price: "$20.00",
+    story: "This book is a comprehensive guide to saving money and managing finances effectively. It covers various strategies and tips to help readers achieve financial stability and success.",
     categories: "Food & Drink",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pulvinar, tortor quis pretium...",
      meta: {
@@ -140,6 +147,7 @@ export const books = [
     image:
       "https://i.pinimg.com/736x/95/6f/9d/956f9dd0e5d0ec87344541547af64808.jpg",
     price: "Free",
+    story: "This book delves into the secrets and mysteries of the past, uncovering hidden truths and forgotten stories. It combines historical research with engaging storytelling to bring history to life.",
     categories: "Arts & Photography",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pulvinar, tortor quis pretium...",
      meta: {
@@ -160,6 +168,7 @@ export const books = [
     image:
       "https://i.pinimg.com/736x/5f/2c/56/5f2c56542421aeff4e87ab05d612fefe.jpg",
     price: "$60.00",
+    story: "This book provides insights and strategies for dealing with difficult situations and challenges in life. It offers practical advice and real-life examples to help readers navigate through tough times.",
     categories: "Biographies & Memoirs",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pulvinar, tortor quis pretium...",
      meta: {
@@ -180,6 +189,7 @@ export const books = [
     image:
       "https://i.pinimg.com/736x/18/5e/9f/185e9f46b45d90f2301f1573aa3aa8d4.jpg",
     price: "$50.00",
+    story: "This book provides insights and strategies for dealing with difficult situations and challenges in life. It offers practical advice and real-life examples to help readers navigate through tough times.",
     categories: "Christian Books & Bibles",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pulvinar, tortor quis pretium...",
      meta: {
@@ -200,6 +210,7 @@ export const books = [
     image:
       "https://i.pinimg.com/736x/82/86/32/8286321c9e9864c0299b16f106fdf47f.jpg",
     price: "Free",
+    story: "This book provides insights and strategies for dealing with difficult situations and challenges in life. It offers practical advice and real-life examples to help readers navigate through tough times.",
     categories: "Research & Publishing Guides",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pulvinar, tortor quis pretium...",
      meta: {
@@ -220,6 +231,7 @@ export const books = [
     image:
       "https://i.pinimg.com/736x/82/86/32/8286321c9e9864c0299b16f106fdf47f.jpg",
     price: "Free",
+    story: "This book provides insights and strategies for dealing with difficult situations and challenges in life. It offers practical advice and real-life examples to help readers navigate through tough times.",
     categories: "Sports & Outdoors",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pulvinar, tortor quis pretium...",
      meta: {
@@ -240,6 +252,7 @@ export const books = [
     image:
       "https://i.pinimg.com/736x/82/86/32/8286321c9e9864c0299b16f106fdf47f.jpg",
     price: "$60.00",
+    story: "This book is a heartwarming tale of love and friendship, exploring the bond between two unique characters. It highlights the importance of compassion, understanding, and the beauty of human connections.",
     categories: "Food & Drink",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pulvinar, tortor quis pretium...",
      meta: {

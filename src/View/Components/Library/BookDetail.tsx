@@ -121,9 +121,9 @@ export default function BookDetail() {
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 animate-fadeIn">
           <div className="bg-white w-11/12 md:w-2/3 lg:w-1/2 p-6 rounded-lg shadow-lg relative">
-            <h2 className="text-xl font-bold mb-4">Preview - {book.title}</h2>
+            <h2 className="text-xl font-bold mb-4">{book.title}</h2>
             <p className="text-gray-700">
-              "This is a short preview of the book content."
+              {book.story || "No story available for this book."}
             </p>
             <button
               onClick={() => setShowModal(false)}
