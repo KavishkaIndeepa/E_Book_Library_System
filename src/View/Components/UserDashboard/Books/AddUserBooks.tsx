@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
 import Swal from "sweetalert2";
-import { a } from "framer-motion/dist/types.d-Bq-Qm38R";
+import axios from "axios";
+import { FaArrowLeft } from "react-icons/fa";
 
-export default function AddBooks() {
+export default function AddUserBooks() {
   const [bookImage, setBookImage] = useState<string | null>(null);
   const [bookPdf, setBookPdf] = useState<string | null>(null);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -49,57 +48,59 @@ export default function AddBooks() {
   ];
 
   const fetchBookDetails = async (bookId: string) => {
-  try {
-    const res = await axios.get(`http://192.168.1.188:5000/api/books/${bookId}`);
-    const book = res.data as {
-      title?: string;
-      price?: string;
-      category?: string;
-      story?: string;
-      description?: string;
-      status?: string;
-      author?: string;
-      image?: string | null;
-      pdf?: string | null;
-      meta?: {
-        sku?: string;
-        tags?: string;
-        format?: string;
-        pages?: string;
-        publishYear?: string;
-        language?: string;
-        country?: string;
-        availability?: string;
+    try {
+      const res = await axios.get(
+        `http://192.168.1.188:5000/api/books/${bookId}`
+      );
+
+      const book = res.data as {
+        title: string;
+        price: string;
+        category: string;
+        story: string;
+        description: string;
+        meta: {
+          sku?: string;
+          tags?: string;
+          format?: string;
+          pages?: string;
+          publishYear?: string;
+          language?: string;
+          country?: string;
+          availability?: string;
+        };
+        status?: string;
+        author: string;
+        image?: string;
+        pdf?: string;
       };
-    };
-
-    setForm({
-      title: book.title || "",
-      price: book.price || "",
-      category: book.category || "",
-      story: book.story || "",
-      description: book.description || "",
-      status: book.status || "added",
-      author: book.author || "",
-      meta: {
-        sku: book.meta?.sku || "",
-        tags: book.meta?.tags || "",
-        format: book.meta?.format || "",
-        pages: book.meta?.pages || "",
-        publishYear: book.meta?.publishYear || "",
-        language: book.meta?.language || "",
-        country: book.meta?.country || "",
-        availability: book.meta?.availability || "",
-      },
-    });
-
-    setBookImage(book.image || null);
-    setBookPdf(book.pdf || null);
-  } catch (err) {
-    console.error("Failed to fetch book", err);
-  }
-};
-
+      if (book) {
+        setForm({
+          title: book.title,
+          price: book.price,
+          category: book.category,
+          story: book.story,
+          description: book.description,
+          meta: {
+            sku: book.meta?.sku || "",
+            tags: book.meta?.tags || "",
+            format: book.meta?.format || "",
+            pages: book.meta?.pages || "",
+            publishYear: book.meta?.publishYear || "",
+            language: book.meta?.language || "",
+            country: book.meta?.country || "",
+            availability: book.meta?.availability || "",
+          },
+          status: book.status || "pending",
+          author: book.author,
+        });
+        setBookImage(book.image || null);
+        setBookPdf(book.pdf || null);
+      }
+    } catch (err) {
+      console.error("Failed to fetch book", err);
+    }
+  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -141,7 +142,7 @@ export default function AddBooks() {
       story: form.story,
       description: form.description,
       meta: form.meta,
-      status: isEditMode ? form.status : "added",
+      status: isEditMode ? form.status : "pending",
     };
 
     try {
@@ -161,10 +162,14 @@ export default function AddBooks() {
         );
         Swal.fire("Updated!", "Book updated successfully.", "success");
       } else {
-        await axios.post("http://192.168.1.188:5000/api/books/", payload, config);
+        await axios.post(
+          "http://192.168.1.188:5000/api/books/",
+          payload,
+          config
+        );
         Swal.fire("Saved!", "Book added successfully.", "success");
       }
-      setTimeout(() => navigate("/admin-dashboard/books"), 2000);
+      setTimeout(() => navigate("/user-dashboard/userBooks"), 2000);
     } catch (err) {
       Swal.fire("Error", "Failed to save the book.", "error");
     }

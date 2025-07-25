@@ -24,16 +24,28 @@ export default function UserDashboard() {
 
   const handleLogout = () => {
     localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    setUser(null);
     navigate("/");
   };
 
   const navItems = [
     { label: "Dashboard", icon: <FaTachometerAlt />, path: "/user-dashboard" },
-    { label: "Books", icon: <FaBook />, path: "/user-dashboard/books" },
+    { label: "Books", icon: <FaBook />, path: "/user-dashboard/userBooks" },
     { label: "Profile", icon: <FaUser />, path: "/user-dashboard/profile" },
-    { label: "Favourites", icon: <FaHeart />, path: "/user-dashboard/favourites" },
+    {
+      label: "Favourites",
+      icon: <FaHeart />,
+      path: "/user-dashboard/favourites",
+    },
     { label: "Cart", icon: <FaShoppingCart />, path: "/user-dashboard/cart" },
-    { label: "Payment", icon: <FaCreditCard />, path: "/user-dashboard/payment" },
+    {
+      label: "Payment",
+      icon: <FaCreditCard />,
+      path: "/user-dashboard/payment",
+    },
+    {path: "/user-dashboard/userBooks/addUserBooks"},
   ];
 
   return (
@@ -45,7 +57,9 @@ export default function UserDashboard() {
         } min-h-screen shadow-xl flex flex-col`}
       >
         <div className="flex items-center justify-between px-4 py-5 border-b border-gray-700">
-          {!collapsed && <h1 className="text-2xl font-bold tracking-wide">Library</h1>}
+          {!collapsed && (
+            <h1 className="text-2xl font-bold tracking-wide">Library</h1>
+          )}
           <FaBars
             className="cursor-pointer text-xl hover:scale-110 transition"
             onClick={() => setCollapsed(!collapsed)}
@@ -60,7 +74,9 @@ export default function UserDashboard() {
                 ? user.profileImage.startsWith("data:image")
                   ? user.profileImage
                   : `data:image/jpeg;base64,${user.profileImage}`
-                : `https://ui-avatars.com/api/?name=${user?.name || "Guest"}&background=random`
+                : `https://ui-avatars.com/api/?name=${
+                    user?.name || "Guest"
+                  }&background=random`
             }
             alt="Profile"
             className="h-12 w-12 rounded-full border-2 border-white shadow-sm object-cover"
@@ -83,7 +99,9 @@ export default function UserDashboard() {
             >
               <span className="text-lg">{item.icon}</span>
               {!collapsed && (
-                <span className="ml-4 group-hover:text-orange-300">{item.label}</span>
+                <span className="ml-4 group-hover:text-orange-300">
+                  {item.label}
+                </span>
               )}
             </button>
           ))}
@@ -93,7 +111,9 @@ export default function UserDashboard() {
             className="flex items-center w-full text-left text-sm font-medium py-2.5 px-3 mt-6 rounded-lg hover:bg-red-600 transition-all duration-200 group"
           >
             <FaSignOutAlt className="text-lg" />
-            {!collapsed && <span className="ml-4 group-hover:text-white">Logout</span>}
+            {!collapsed && (
+              <span className="ml-4 group-hover:text-white">Logout</span>
+            )}
           </button>
         </nav>
       </div>

@@ -2,10 +2,22 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import BookIllustration from "../../../Assets/Images/Login/Login.jpg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import {
+  faEye,
+  faEyeSlash,
+  faArrowLeft,
+} from "@fortawesome/free-solid-svg-icons";
 import Swal from "sweetalert2";
 import axios from "axios";
+import { useAuth } from "../../../AuthContext";
+
+interface LoginResponse {
+  token: string;
+  user: {
+    role: string;
+    [key: string]: any;
+  };
+}
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -13,17 +25,19 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const { login } = useAuth();
 
   const navigate = useNavigate();
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     let valid = true;
     setEmailError("");
     setPasswordError("");
 
+    // Validation
     if (!email) {
       setEmailError("Email is required");
       valid = false;
@@ -43,11 +57,18 @@ export default function Login() {
     if (!valid) return;
 
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/login", {
-        email,
-        password
-      });
-      const data = res.data as { user: any };
+      const res = await axios.post<LoginResponse>(
+        "http://localhost:5000/api/auth/login",
+        {
+          email,
+          password,
+        }
+      );
+
+      const data = res.data;
+
+      // Save token and user info in localStorage
+      login(data.token, data.user.role);
       localStorage.setItem("user", JSON.stringify(data.user));
 
       Swal.fire("Success", "Login Successful!", "success").then(() => {
@@ -58,13 +79,10 @@ export default function Login() {
     } catch (err: any) {
       if (err.response && err.response.data?.msg) {
         Swal.fire("Error", err.response.data.msg, "error");
-         setEmail("");
-        setPassword("");
       } else {
         Swal.fire("Error", "Server error. Please try again later.", "error");
-         setEmail("");
-        setPassword("");
       }
+      setPassword("");
     }
   };
 
@@ -75,12 +93,11 @@ export default function Login() {
         backgroundImage: `url(${BookIllustration})`,
       }}
     >
-      {/* Dark overlay */}
+      {/* Overlay */}
       <div className="absolute inset-0 bg-black bg-opacity-60 z-0" />
 
-      {/* Login Card */}
+      {/* Login card */}
       <div className="relative z-10 backdrop-blur-lg bg-white/10 rounded-2xl shadow-2xl max-w-md w-full px-8 py-10">
-        {/* Back to Home Link */}
         <div className="mb-4">
           <Link
             to="/"
@@ -96,7 +113,6 @@ export default function Login() {
         </h2>
 
         <form className="space-y-6" onSubmit={handleSubmit}>
-          {/* Email */}
           <div>
             <label className="block text-sm font-medium text-white mb-1">
               Email
@@ -113,9 +129,11 @@ export default function Login() {
               } text-white rounded-lg placeholder:text-white/70 focus:outline-none focus:ring-2`}
               aria-label="Email"
             />
+            {emailError && (
+              <p className="text-red-500 text-xs mt-1">{emailError}</p>
+            )}
           </div>
 
-          {/* Password */}
           <div>
             <label className="block text-sm font-medium text-white mb-1">
               Password
@@ -142,9 +160,11 @@ export default function Login() {
                 <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
               </button>
             </div>
+            {passwordError && (
+              <p className="text-red-500 text-xs mt-1">{passwordError}</p>
+            )}
           </div>
 
-          {/* Forgot password */}
           <div className="text-right">
             <Link
               to="/forgot-password"
@@ -154,7 +174,6 @@ export default function Login() {
             </Link>
           </div>
 
-          {/* Login Button */}
           <button
             type="submit"
             className="w-full bg-[#954c2e] hover:bg-[#571f09] transition text-white py-2 rounded-xl font-semibold shadow-lg"
@@ -163,7 +182,6 @@ export default function Login() {
           </button>
         </form>
 
-        {/* Sign up link */}
         <p className="text-sm text-center mt-6 text-white/80">
           Don’t have an account?{" "}
           <Link to="/signup" className="text-white hover:underline font-medium">

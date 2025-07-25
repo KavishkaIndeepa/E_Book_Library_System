@@ -17,6 +17,8 @@ import Payment from "./View/Components/UserDashboard/Payment/Payment";
 import Members from "./View/Components/AdminDashboard/Members/Members";
 import AdminBooks from "./View/Components/AdminDashboard/AdminBooks/AdminBooks";
 import AddBooks from "./View/Components/AdminDashboard/AdminBooks/AddBooks";
+import RequireAuth from "./View/Common/RequireAuth";
+import AddUserBooks from "./View/Components/UserDashboard/Books/AddUserBooks";
 
 function App() {
   return (
@@ -25,20 +27,28 @@ function App() {
         <Route path="/*" element={<DefaultLayout />}></Route>
         <Route path="/login" Component={Login}></Route>
         <Route path="/signup" Component={SignUp}></Route>
+
+        <Route element={<RequireAuth />}>
         <Route path="/user-dashboard" element={<UserDashboard />}>
           <Route index element={<Dashboard />} />
-          <Route path="books" element={<Books />} />
+          <Route path="userBooks" element={<Books />} />
           <Route path="profile" element={<Profile />} />
           <Route path="favourites" element={<Favourites />} />
           <Route path="cart" element={<Cart />} />
           <Route path="payment" element={<Payment />} />
+          <Route path="addUserBooks" element={<AddUserBooks />} />
+          <Route path="addUserBooks/:id" element={<AddUserBooks />} />
         </Route>
+        </Route>
+
+        <Route element={<RequireAuth allowedRoles={["admin"]} />}>
         <Route path="/admin-dashboard" element={<AdminDashboard />}> 
         <Route index element={<MainDashboard />} />
           <Route path="members" element={<Members />} />
           <Route path="books" element={<AdminBooks />} />
           <Route path="add-books" element={<AddBooks />} />
           <Route path="add-books/:id" element={<AddBooks />} />
+        </Route>
         </Route>
       </Routes>
     </HashRouter>

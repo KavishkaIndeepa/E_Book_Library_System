@@ -19,7 +19,11 @@ export default function Navbar() {
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
-    if (storedUser) setUser(JSON.parse(storedUser));
+    if (storedUser) {
+      const parsed = JSON.parse(storedUser);
+      console.log("User role:", parsed.role);
+      setUser(parsed);
+    }
   }, []);
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
@@ -27,6 +31,8 @@ export default function Navbar() {
 
   const handleLogout = () => {
     localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
     setUser(null);
     setDropdownOpen(false);
     navigate("/");
@@ -54,9 +60,6 @@ export default function Navbar() {
           </li>
           <li>
             <Link to="/library">Library</Link>
-          </li>
-          <li>
-            <Link to="/blog">Blog</Link>
           </li>
           <li>
             <Link to="/contact">Contact</Link>
@@ -140,9 +143,6 @@ export default function Navbar() {
           </Link>
           <Link to="/library" onClick={toggleMenu}>
             Library
-          </Link>
-          <Link to="/blog" onClick={toggleMenu}>
-            Blog
           </Link>
           <Link to="/contact" onClick={toggleMenu}>
             Contact

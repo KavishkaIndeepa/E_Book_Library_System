@@ -8,26 +8,46 @@ import {
   faStar,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { books } from "./Library";
+import axios from "axios";
 
 export default function BookDetail() {
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, []);
   const { id } = useParams<{ id: string }>();
-  const book = books.find((b: any) => b.id === Number(id));
-
+  const [book, setBook] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [isFav, setIsFav] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [activeTab, setActiveTab] = useState("Description");
 
-  if (!book)
-    return (
-      <div className="p-10 text-center text-gray-500">Book not found.</div>
-    );
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    fetchBook();
+  }, [id]);
 
-  const isFree = book.price.toLowerCase() === "free";
+  const fetchBook = async () => {
+    try {
+      const res = await axios.get(`http://192.168.1.188:5000/api/books/${id}`);
+      setBook(res.data);
+    } catch (err) {
+      console.error(err);
+      setError("Book not found.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading)
+    return (
+      <div className="p-10 mt-24 mb-24 text-center text-gray-500">Loading book...</div>
+    );
+  if (error || !book)
+    return <div className="p-10 text-center text-gray-500">{error}</div>;
+
+  const isFree = book.price?.toLowerCase() === "free";
+  const imageSrc = book.image?.startsWith("data:image")
+    ? book.image
+    : `data:image/jpeg;base64,${book.image}`;
 
   return (
     <div className="min-h-screen mt-24 px-4 md:px-10 py-8 bg-white text-black font-sans transition-all">
@@ -37,7 +57,7 @@ export default function BookDetail() {
         <div className="w-full md:w-1/2 flex justify-center">
           <div className="rounded-lg overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300">
             <img
-              src={book.image}
+              src={imageSrc}
               alt={book.title}
               className="h-96 w-full object-cover"
             />
@@ -68,7 +88,12 @@ export default function BookDetail() {
 
           {!isFree && (
             <>
-              <p className="text-2xl font-bold text-red-500">{book.price}</p>
+              <p className="text-2xl font-bold text-red-500">
+                {" "}
+                {book.price?.toLowerCase() === "free"
+                  ? "Free"
+                  : `$${book.price}`}
+              </p>
               <div className="flex items-center gap-4">
                 <QuantitySelector
                   quantity={quantity}
@@ -93,7 +118,7 @@ export default function BookDetail() {
                 icon={faDownload}
                 className="bg-green-500 hover:bg-green-600 text-white"
                 text="Download"
-                href="/download/sample.pdf"
+                href={book.pdf}
               />
             ) : (
               <Button
@@ -138,7 +163,7 @@ export default function BookDetail() {
   );
 }
 
-/* Reusable Components */
+/* Reusable Components remain unchanged */
 const MetaItem = ({ label, value }: { label: string; value?: string }) => (
   <div>
     <span className="font-semibold text-gray-700">{label}:</span>{" "}

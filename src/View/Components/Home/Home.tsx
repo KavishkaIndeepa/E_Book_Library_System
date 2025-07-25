@@ -8,127 +8,67 @@ import {
   faChevronLeft,
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
-
-const chapters = [
-  {
-    title: "Chapter 01",
-    content:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque euismod, nisi vel consectetur.",
-  },
-  {
-    title: "Chapter 02",
-    content: "Chapter 2 content goes here. This is some placeholder text.",
-  },
-  {
-    title: "Chapter 03",
-    content: "Chapter 3 content goes here. This is some placeholder text.",
-  },
-  {
-    title: "Chapter 04",
-    content: "Chapter 4 content goes here. This is some placeholder text.",
-  },
-];
-
-const books = [
-  {
-    id: 1,
-    title: "Book One",
-    image:
-      "https://i.pinimg.com/736x/0a/6c/89/0a6c89e4de84e74745c22a0d656e6e2d.jpg",
-  },
-  {
-    id: 2,
-    title: "Book Two",
-    image:
-      "https://i.pinimg.com/736x/65/97/fa/6597fad2d2118ce25b3b2d2acb39a551.jpg",
-  },
-  {
-    id: 3,
-    title: "Book Three",
-    image:
-      "https://i.pinimg.com/736x/47/3d/de/473dde63b19f2febc9ef6c6ab24969c7.jpg",
-  },
-  {
-    id: 4,
-    title: "Book Four",
-    image:
-      "https://i.pinimg.com/736x/a0/50/40/a050401a6437cba929b52f0d5eb1438e.jpg",
-  },
-  {
-    id: 5,
-    title: "Book Five",
-    image:
-      "https://i.pinimg.com/736x/f1/d5/30/f1d53025b4393715e43d14d3c12f481b.jpg",
-  },
-  {
-    id: 6,
-    title: "Book Six",
-    image:
-      "https://i.pinimg.com/736x/73/46/8c/73468c412d2509c536f6a36184de75cb.jpg",
-  },
-  {
-    id: 7,
-    title: "Book Seven",
-    image:
-      "https://i.pinimg.com/736x/95/6f/9d/956f9dd0e5d0ec87344541547af64808.jpg",
-  },
-  {
-    id: 8,
-    title: "Book Eight",
-    image:
-      "https://i.pinimg.com/736x/5f/2c/56/5f2c56542421aeff4e87ab05d612fefe.jpg",
-  },
-  {
-    id: 9,
-    title: "Book Nine",
-    image:
-      "https://i.pinimg.com/736x/18/5e/9f/185e9f46b45d90f2301f1573aa3aa8d4.jpg",
-  },
-  {
-    id: 10,
-    title: "Book Ten",
-    image:
-      "https://i.pinimg.com/736x/82/86/32/8286321c9e9864c0299b16f106fdf47f.jpg",
-  },
-  {
-    id: 11,
-    title: "Book Eleven",
-    image:
-      "https://i.pinimg.com/736x/a2/b9/45/a2b945931f5801d26e020477151cca6a.jpg",
-  },
-  {
-    id: 12,
-    title: "Book Twelve",
-    image:
-      "https://i.pinimg.com/736x/ac/c7/77/acc7779ef004fc043189532b27e6e5f9.jpg",
-  },
-];
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
+  const [books, setBooks] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const itemsPerPage = 4;
+
+  const chapters = [
+    {
+      title: "Chapter 01",
+      content:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque euismod, nisi vel consectetur.",
+    },
+    {
+      title: "Chapter 02",
+      content: "Chapter 2 content goes here. This is some placeholder text.",
+    },
+    {
+      title: "Chapter 03",
+      content: "Chapter 3 content goes here. This is some placeholder text.",
+    },
+    {
+      title: "Chapter 04",
+      content: "Chapter 4 content goes here. This is some placeholder text.",
+    },
+  ];
 
   useEffect(() => {
+    fetchBooks();
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
-  const [activeIndex, setActiveIndex] = useState(null);
-
-  const toggleAccordion = (index: any) => {
-    setActiveIndex(index === activeIndex ? null : index);
+  const fetchBooks = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.get<{ books: any[] }>("http://192.168.1.188:5000/api/books?page=1&limit=12");
+      const { books: fetchedBooks } = res.data;
+      const freeBooks = fetchedBooks.filter((book: any) => book.price === "Free");
+      setBooks(freeBooks);
+    } catch (err) {
+      console.error("Failed to fetch books", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  const itemsPerPage = 4;
-
   useEffect(() => {
-  const interval = setInterval(() => {
-    setCurrentIndex((prev) =>
-      prev < books.length - itemsPerPage ? prev + 1 : 0
-    );
-  }, 3000); // Auto-scroll every 3 seconds
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) =>
+        prev < books.length - itemsPerPage ? prev + 1 : 0
+      );
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [books]);
 
-  return () => clearInterval(interval);
-}, []);
+  const toggleAccordion = (index: number) => {
+    setActiveIndex(index === activeIndex ? null : index);
+  };
 
   const nextSlide = () => {
     if (currentIndex < books.length - itemsPerPage) {
@@ -142,13 +82,14 @@ export default function Home() {
     }
   };
 
+  const navigate = useNavigate();
+
   return (
     <div className="mt-28 md:mt-12 mb-10 font-sans bg-white text-black">
-      <div className="w-full h-auto lg:h-screen mt-8 md:mt-12 px-4 md:px-8 flex items-center mb-8 lg:mb-0 ">
-        {/* Main Container */}
+      {/* Hero Section */}
+      <div className="w-full h-auto lg:h-screen mt-8 md:mt-12 px-4 md:px-8 flex items-center mb-8 lg:mb-0">
         <div className="w-full max-w-6xl rounded-2xl flex flex-col md:flex-row overflow-hidden">
-          {/* Left Section - Text */}
-          <div className="w-full md:w-1/2 p-6 mt-8 lg:mt-0 md:p-12 flex flex-col justify-center text-Black">
+          <div className="w-full md:w-1/2 p-6 mt-8 lg:mt-0 md:p-12 flex flex-col justify-center">
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 leading-tight">
               There Is No Friend As Loyal As A Book
             </h1>
@@ -156,14 +97,15 @@ export default function Home() {
               Explore a world of knowledge, stories, and imagination. Access
               thousands of e-books right at your fingertips.
             </p>
-            <button className="browse-btn relative overflow-hidden text-[#954c2e] px-6 py-3 rounded-lg font-semibold w-fit border-2 border-[#954c2e] group">
+            <button
+              className="browse-btn relative overflow-hidden text-[#954c2e] px-6 py-3 rounded-lg font-semibold w-fit border-2 border-[#954c2e] group"
+              onClick={() => navigate("/library")}
+            >
               <span className="relative z-10 transition-colors duration-300">
                 Browse Library
               </span>
             </button>
           </div>
-
-          {/* Right Section - Image */}
           <div className="w-full md:w-1/2 flex justify-center items-center">
             <img
               src={hero}
@@ -174,19 +116,16 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Achievement Section */}
-      <div className="w-full py-4 px-4 md:px-8 ">
+      {/* Achievements */}
+      <div className="w-full py-4 px-4 md:px-8">
         <div className="max-w-6xl mx-auto">
-          {/* Title with underline */}
           <div className="text-center mb-12">
-            <h2 className="text-2xl md:text-4xl font-semibold inline-block text-[#333]">
+            <h2 className="text-2xl md:text-4xl font-semibold text-[#333] inline-block">
               What you'll achieve by this book
             </h2>
             <div className="w-24 h-1 bg-orange-400 mx-auto mt-2" />
           </div>
-
           <div className="flex flex-col md:flex-row items-center gap-10">
-            {/* Left side - Image */}
             <div className="w-full md:w-1/2">
               <img
                 src={hero}
@@ -194,42 +133,21 @@ export default function Home() {
                 className="rounded-xl w-full shadow-lg"
               />
             </div>
-
-            {/* Right side - Cards */}
             <div className="w-full md:w-1/2 grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {/* Card 1 */}
-              <div className="bg-white p-6 rounded-lg shadow hover:shadow-md shadow-[#954c2e] hover:shadow-[#954c2e] transition">
-                <h3 className="text-lg font-semibold mb-2">Experience</h3>
-                <p className="text-sm text-gray-600">
-                  Learn and evolve with stories that spark insight and
-                  reflection.
-                </p>
-              </div>
-
-              {/* Card 2 */}
-              <div className="bg-white p-6 rounded-lg shadow hover:shadow-md shadow-[#954c2e] hover:shadow-[#954c2e] transition">
-                <h3 className="text-lg font-semibold mb-2">Motivation</h3>
-                <p className="text-sm text-gray-600">
-                  Discover ideas that inspire change and personal growth.
-                </p>
-              </div>
-
-              {/* Card 3 */}
-              <div className="bg-white p-6 rounded-lg shadow hover:shadow-md shadow-[#954c2e] hover:shadow-[#954c2e] transition">
-                <h3 className="text-lg font-semibold mb-2">Goals</h3>
-                <p className="text-sm text-gray-600">
-                  Set and achieve new milestones through guided knowledge.
-                </p>
-              </div>
-
-              {/* Card 4 */}
-              <div className="bg-white p-6 rounded-lg shadow hover:shadow-md shadow-[#954c2e] hover:shadow-[#954c2e] transition">
-                <h3 className="text-lg font-semibold mb-2">Vision</h3>
-                <p className="text-sm text-gray-600">
-                  Shape your outlook with a broader perspective on life and
-                  ideas.
-                </p>
-              </div>
+              {[
+                { title: "Experience", desc: "Learn and evolve with stories..." },
+                { title: "Motivation", desc: "Discover ideas that inspire..." },
+                { title: "Goals", desc: "Set and achieve new milestones..." },
+                { title: "Vision", desc: "Shape your outlook on life..." },
+              ].map((item, i) => (
+                <div
+                  key={i}
+                  className="bg-white p-6 rounded-lg shadow hover:shadow-md shadow-[#954c2e] hover:shadow-[#954c2e] transition"
+                >
+                  <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
+                  <p className="text-sm text-gray-600">{item.desc}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -238,17 +156,13 @@ export default function Home() {
       {/* Chapters */}
       <div className="w-full py-4 px-4 md:px-8 bg-[#fdf6f3]">
         <div className="max-w-6xl mx-auto">
-          {/* Title */}
           <div className="text-center mb-12">
             <h2 className="text-2xl md:text-4xl font-semibold inline-block text-[#333]">
               Chapters We've Covered
             </h2>
             <div className="w-24 h-1 bg-orange-400 mx-auto mt-2" />
           </div>
-
-          {/* Content */}
           <div className="flex flex-col md:flex-row items-center gap-10">
-            {/* Left - Image */}
             <div className="w-full md:w-1/2">
               <img
                 src={hero}
@@ -256,8 +170,6 @@ export default function Home() {
                 className="rounded-xl w-full shadow-lg"
               />
             </div>
-
-            {/* Right - Accordion */}
             <div className="w-full md:w-1/2 space-y-4">
               {chapters.map((chapter, index) => (
                 <div
@@ -295,9 +207,8 @@ export default function Home() {
       {/* Free Books */}
       <div className="w-full py-4 px-4 md:px-8">
         <div className="max-w-6xl mx-auto">
-          {/* Title */}
           <div className="text-center mb-12">
-            <h2 className="text-2xl md:text-4xl font-semibold inline-block text-[#333]">
+            <h2 className="text-2xl md:text-4xl font-semibold text-[#333] inline-block">
               Read Some Books Free
             </h2>
             <div className="w-24 h-1 bg-orange-400 mx-auto mt-2" />
@@ -305,7 +216,6 @@ export default function Home() {
 
           {/* Carousel */}
           <div className="relative">
-            {/* Arrows */}
             <button
               onClick={prevSlide}
               className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow z-10 hover:bg-orange-100"
@@ -319,34 +229,50 @@ export default function Home() {
               <FontAwesomeIcon icon={faChevronRight} />
             </button>
 
-            {/* Book Cards */}
             <div className="overflow-hidden">
-              <div
-                className="flex transition-transform duration-500 ease-in-out"
-                style={{ transform: `translateX(-${currentIndex * 25}%)` }}
-              >
-                {books.map((book) => (
-                  <div
-                    key={book.id}
-                    className="min-w-[50%] sm:min-w-[33.33%] md:min-w-[25%] px-3 cursor-pointer"
-                  >
-                    <div className="bg-white rounded-lg p-4 shadow hover:shadow-md transition">
-                      <img
-                        src={book.image}
-                        alt={book.title}
-                        className="w-full h-64 object-cover rounded"
-                      />
-                      <h3 className="text-center mt-2 font-medium text-sm text-[#954c2e]">
-                        {book.title}
-                      </h3>
+              {loading ? (
+                <div className="flex justify-center items-center h-64">
+                  <div className="animate-spin rounded-full h-12 w-12 border-4 border-orange-500 border-t-transparent"></div>
+                </div>
+              ) : (
+                <div
+                  className="flex transition-transform duration-500 ease-in-out"
+                  style={{ transform: `translateX(-${currentIndex * 25}%)` }}
+                >
+                  {books.map((book) => (
+                    <div
+                      key={book._id}
+                      onClick={() => navigate(`/book/${book._id}`)}
+                      className="min-w-[50%] sm:min-w-[33.33%] md:min-w-[25%] px-3 cursor-pointer"
+                    >
+                      <div className="bg-white rounded-lg p-4 shadow hover:shadow-md transition">
+                        {book.image ? (
+                          <img
+                            src={
+                              book.image.startsWith("data:image")
+                                ? book.image
+                                : `data:image/jpeg;base64,${book.image}`
+                            }
+                            alt={book.title}
+                            className="w-full h-64 object-cover rounded"
+                          />
+                        ) : (
+                          <span className="text-xs text-gray-400 italic flex items-center justify-center h-64">
+                            No Image
+                          </span>
+                        )}
+                        <h3 className="text-center mt-2 font-medium text-sm text-[#954c2e]">
+                          {book.title}
+                        </h3>
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
       </div>
-    </div>
-  );
+</div>
+  )
 }
