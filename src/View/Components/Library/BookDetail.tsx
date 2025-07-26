@@ -9,6 +9,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 export default function BookDetail() {
   const { id } = useParams<{ id: string }>();
@@ -25,6 +26,12 @@ export default function BookDetail() {
     fetchBook();
   }, [id]);
 
+  useEffect(() => {
+  if (book) {
+    checkIsFav();
+  }
+}, [book]);
+
   const fetchBook = async () => {
     try {
       const res = await axios.get(`http://192.168.1.188:5000/api/books/${id}`);
@@ -37,9 +44,120 @@ export default function BookDetail() {
     }
   };
 
+  //add to cart
+  const handleAddToCart = async () => {
+    const userString = localStorage.getItem("user");
+    let user = null;
+
+    try {
+      user = userString ? JSON.parse(userString) : null;
+    } catch (err) {
+      console.error("Failed to parse user from localStorage", err);
+    }
+
+    const token = user?.token || localStorage.getItem("token");
+
+    if (!user || !token) {
+      Swal.fire({
+        icon: "warning",
+        title: "Login Required",
+        text: "Please log in to add books to your cart.",
+      });
+      return;
+    }
+
+    try {
+      await axios.post(
+        "http://192.168.1.188:5000/api/cart/add",
+        {
+          bookId: book._id,
+          quantity,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      Swal.fire({
+        icon: "success",
+        title: "Added to Cart",
+        text: "You successfully added the book to the cart. You can check your cart items on your dashboard.",
+        confirmButtonColor: "#3085d6",
+      });
+    } catch (err: any) {
+      console.error("Add to cart failed", err);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text:
+          err.response?.data?.msg ||
+          "Failed to add book to cart. Please try again.",
+      });
+    }
+  };
+
+   const checkIsFav = async () => {
+    const token = localStorage.getItem("token");
+    if (!token || !id) return;
+
+    try {
+      const res = await axios.get("http://192.168.1.188:5000/api/wishlist", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const wishlist = res.data as {
+        _id: string;
+        bookId: { _id: string };
+      }[];
+
+      const isInWishlist = wishlist.some((item) => item.bookId._id === id);
+      setIsFav(isInWishlist);
+    } catch (err) {
+      console.error("Failed to check wishlist", err);
+    }
+  };
+
+  const toggleWishlist = async () => {
+    const token = localStorage.getItem("token");
+    if (!token || !id) {
+      Swal.fire({
+        icon: "warning",
+        title: "Login Required",
+        text: "Please log in to use the wishlist.",
+      });
+      return;
+    }
+
+    try {
+      if (!isFav) {
+        await axios.post(
+          "http://192.168.1.188:5000/api/wishlist/add",
+          { bookId: id },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setIsFav(true);
+        Swal.fire("Added", "Book added to your wishlist!", "success");
+      } else {
+        await axios.delete(
+          `http://192.168.1.188:5000/api/wishlist/remove/${id}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setIsFav(false);
+        Swal.fire("Removed", "Book removed from wishlist.", "info");
+      }
+    } catch (err: any) {
+      console.error("Wishlist toggle failed", err);
+      Swal.fire("Error", err.response?.data?.msg || "Try again", "error");
+    }
+  };
+
   if (loading)
     return (
-      <div className="p-10 mt-24 mb-24 text-center text-gray-500">Loading book...</div>
+      <div className="p-10 mt-24 mb-24 text-center text-gray-500">
+        Loading book...
+      </div>
     );
   if (error || !book)
     return <div className="p-10 text-center text-gray-500">{error}</div>;
@@ -71,7 +189,7 @@ export default function BookDetail() {
             {isFree ? "Free to Download" : "Available in Stock"}
           </p>
 
-          <div className="flex items-center gap-1 text-red-500">
+          {/* <div className="flex items-center gap-1 text-red-500">
             {Array(5)
               .fill(0)
               .map((_, i) => (
@@ -80,7 +198,7 @@ export default function BookDetail() {
             <span className="text-gray-600 ml-2 text-sm">
               (1 Customer Review)
             </span>
-          </div>
+          </div> */}
 
           <p className="text-gray-600 text-sm">
             {book.description || "No description available."}
@@ -102,17 +220,14 @@ export default function BookDetail() {
                 <Button
                   className="bg-red-500 hover:bg-red-600 text-white"
                   text="Add To Cart"
+                  onClick={handleAddToCart}
                 />
               </div>
             </>
           )}
 
           <div className="flex items-center gap-4 mt-4">
-            <IconButton
-              icon={faHeart}
-              active={isFav}
-              onClick={() => setIsFav(!isFav)}
-            />
+            <IconButton icon={faHeart} active={isFav} onClick={toggleWishlist} />
             {isFree ? (
               <Button
                 icon={faDownload}

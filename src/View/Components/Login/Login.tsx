@@ -26,12 +26,14 @@ export default function Login() {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const { login } = useAuth();
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
 
     let valid = true;
     setEmailError("");
@@ -54,7 +56,10 @@ export default function Login() {
       valid = false;
     }
 
-    if (!valid) return;
+    if (!valid) {
+      setLoading(false);
+      return;
+    }
 
     try {
       const res = await axios.post<LoginResponse>(
@@ -70,7 +75,7 @@ export default function Login() {
       // Save token and user info in localStorage
       login(data.token, data.user.role);
       localStorage.setItem("user", JSON.stringify(data.user));
-
+      localStorage.setItem("token", data.token);
       Swal.fire("Success", "Login Successful!", "success").then(() => {
         setEmail("");
         setPassword("");
@@ -83,6 +88,8 @@ export default function Login() {
         Swal.fire("Error", "Server error. Please try again later.", "error");
       }
       setPassword("");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -176,9 +183,33 @@ export default function Login() {
 
           <button
             type="submit"
-            className="w-full bg-[#954c2e] hover:bg-[#571f09] transition text-white py-2 rounded-xl font-semibold shadow-lg"
+            disabled={loading}
+            className="w-full bg-[#954c2e] hover:bg-[#571f09] transition text-white py-2 rounded-xl font-semibold shadow-lg flex items-center justify-center"
           >
-            Login
+            {loading ? (
+              <svg
+                className="animate-spin h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v8H4z"
+                ></path>
+              </svg>
+            ) : (
+              "Login"
+            )}
           </button>
         </form>
 

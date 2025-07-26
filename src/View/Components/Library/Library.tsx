@@ -5,6 +5,7 @@ import { faSearch, faHeart, faEye } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import debounce from "lodash/debounce";
+import Swal from "sweetalert2";
 
 export default function Library() {
   const [books, setBooks] = useState<any[]>([]);
@@ -15,11 +16,13 @@ export default function Library() {
   const [totalBooks, setTotalBooks] = useState(0);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [wishlistIds, setWishlistIds] = useState<string[]>([]);
 
   const booksPerPage = 9;
 
   useEffect(() => {
     fetchBooks();
+    fetchWishlist();
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [page]);
 
@@ -63,6 +66,120 @@ export default function Library() {
 
   const totalPages = Math.ceil(totalBooks / booksPerPage);
 
+  //add to cart
+  const handleAddToCart = async (book: any) => {
+    // Get user from localStorage
+    let user = null;
+    const userString = localStorage.getItem("user");
+    try {
+      user = userString ? JSON.parse(userString) : null;
+    } catch (err) {
+      console.error("Failed to parse user from localStorage", err);
+    }
+
+    // Get token from user object or fallback to 'token' key
+    const token = user?.token || localStorage.getItem("token");
+
+    // Show warning if user or token is missing
+    if (!user || !token) {
+      Swal.fire({
+        icon: "warning",
+        title: "Login Required",
+        text: "Please log in to add books to your cart.",
+        confirmButtonColor: "#d33",
+      });
+      return;
+    }
+
+    try {
+      // Send request to backend to add item to cart
+      await axios.post(
+        "http://192.168.1.188:5000/api/cart/add",
+        {
+          bookId: book._id,
+          quantity: 1,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // Show success alert
+      Swal.fire({
+        icon: "success",
+        title: "Added to Cart",
+        text: "You successfully added the book to the cart. You can check your cart items on your dashboard.",
+        confirmButtonColor: "#3085d6",
+      });
+    } catch (err: any) {
+      // Show error alert with message from backend or generic fallback
+      console.error("Add to cart failed", err);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text:
+          err.response?.data?.msg ||
+          "Failed to add book to cart. Please try again.",
+        confirmButtonColor: "#d33",
+      });
+    }
+  };
+
+  //Favourites
+  const fetchWishlist = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    try {
+      const res = await axios.get("http://192.168.1.188:5000/api/wishlist", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const wishlist = res.data as any[];
+      const bookIds = wishlist.map((item: any) => item.bookId._id);
+      setWishlistIds(bookIds);
+    } catch (err) {
+      console.error("Failed to fetch wishlist", err);
+    }
+  };
+
+  const handleToggleFavorite = async (bookId: string) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      Swal.fire({
+        icon: "warning",
+        title: "Login Required",
+        text: "Please log in to manage your favorites.",
+      });
+      return;
+    }
+
+    const isAlreadyFav = wishlistIds.includes(bookId);
+
+    try {
+      if (!isAlreadyFav) {
+        await axios.post(
+          "http://192.168.1.188:5000/api/wishlist/add",
+          { bookId },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setWishlistIds((prev) => [...prev, bookId]);
+        Swal.fire("Added", "Book added to favorites!", "success");
+      } else {
+        await axios.delete(
+          `http://192.168.1.188:5000/api/wishlist/remove/${bookId}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setWishlistIds((prev) => prev.filter((id) => id !== bookId));
+        Swal.fire("Removed", "Book removed from favorites.", "info");
+      }
+    } catch (err: any) {
+      console.error("Favorite toggle failed", err);
+      Swal.fire("Error", err.response?.data?.msg || "Try again", "error");
+    }
+  };
+
   return (
     <div className="mt-28 md:mt-24 mb-10 font-sans bg-white text-black">
       {/* Hero Section */}
@@ -84,8 +201,8 @@ export default function Library() {
           </h2>
           <p className="text-sm md:text-lg font-light max-w-xl mx-auto">
             Discover a wide range of bestselling books and enjoy exclusive
-            discounts. Whether you love fiction, non-fiction, or academic reads —
-            there’s something here for everyone.
+            discounts. Whether you love fiction, non-fiction, or academic reads
+            — there’s something here for everyone.
           </p>
         </div>
       </div>
@@ -113,15 +230,17 @@ export default function Library() {
 
             {/* Free / Paid Filter */}
             <div>
-              <h3 className="text-lg font-semibold border-b pb-2">Free / Paid</h3>
+              <h3 className="text-lg font-semibold border-b pb-2">
+                Free / Paid
+              </h3>
               <div className="mt-2 space-y-2">
-                {['all', 'free', 'paid'].map((type) => (
+                {["all", "free", "paid"].map((type) => (
                   <label
                     key={type}
                     className={`block cursor-pointer p-2 rounded-md ${
                       showOnly === type
-                        ? 'bg-gray-800 text-white'
-                        : 'text-black hover:bg-gray-100'
+                        ? "bg-gray-800 text-white"
+                        : "text-black hover:bg-gray-100"
                     }`}
                   >
                     <input
@@ -135,11 +254,11 @@ export default function Library() {
                       }}
                       className="mr-2"
                     />
-                    {type === 'all'
-                      ? 'All Books'
-                      : type === 'free'
-                      ? 'Free Books'
-                      : 'Paid Books'}
+                    {type === "all"
+                      ? "All Books"
+                      : type === "free"
+                      ? "Free Books"
+                      : "Paid Books"}
                   </label>
                 ))}
               </div>
@@ -147,19 +266,23 @@ export default function Library() {
 
             {/* Categories Filter */}
             <div>
-              <h3 className="text-lg font-semibold border-b pb-2">Categories</h3>
+              <h3 className="text-lg font-semibold border-b pb-2">
+                Categories
+              </h3>
               <div className="space-y-2 mt-2">
                 {categories.map((cat, index) => (
                   <button
                     key={index}
                     onClick={() => {
-                      setSelectedCategory((prev) => (prev === cat ? null : cat));
+                      setSelectedCategory((prev) =>
+                        prev === cat ? null : cat
+                      );
                       setPage(1);
                     }}
                     className={`w-full text-left px-4 py-2 rounded-md border ${
                       selectedCategory === cat
-                        ? 'bg-gray-800 text-white'
-                        : 'text-black hover:bg-gray-100'
+                        ? "bg-gray-800 text-white"
+                        : "text-black hover:bg-gray-100"
                     }`}
                   >
                     {cat}
@@ -182,9 +305,14 @@ export default function Library() {
 
           {/* Book Grid */}
           <div className="lg:w-3/4 w-full">
-            <div id="book-grid" className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+            <div
+              id="book-grid"
+              className="grid sm:grid-cols-2 md:grid-cols-3 gap-6"
+            >
               {loading ? (
-                <div className="col-span-full text-center text-gray-500 py-12">Loading books...</div>
+                <div className="col-span-full text-center text-gray-500 py-12">
+                  Loading books...
+                </div>
               ) : filteredBooks.length > 0 ? (
                 filteredBooks.map((book) => (
                   <div
@@ -202,14 +330,30 @@ export default function Library() {
                       alt={book.title}
                       className="w-full h-52 object-cover rounded"
                     />
-                    <h4 className="mt-3 text-md font-semibold text-black">{book.title}</h4>
+                    <h4 className="mt-3 text-md font-semibold text-black">
+                      {book.title}
+                    </h4>
                     <div className="text-sm text-gray-600">
                       <span className="text-black font-medium">
-                        {book.price?.toLowerCase() === "free" ? "Free" : `$${book.price}`}
+                        {book.price?.toLowerCase() === "free"
+                          ? "Free"
+                          : `$${book.price}`}
                       </span>
                     </div>
                     <div className="flex justify-between items-center mt-4">
-                      <button className="bg-black px-4 py-1 rounded-full text-sm text-white transform transition-transform hover:scale-105 hover:bg-gray-800 shadow-sm">
+                      <button
+                        className={`px-4 py-1 rounded-full text-sm text-white transition ${
+                          book.price?.toLowerCase() === "free"
+                            ? "bg-gray-400 cursor-not-allowed"
+                            : "bg-black hover:bg-gray-800"
+                        }`}
+                        disabled={book.price?.toLowerCase() === "free"}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (book.price?.toLowerCase() !== "free")
+                            handleAddToCart(book);
+                        }}
+                      >
                         Add To Cart
                       </button>
                       <div className="flex gap-2">
@@ -220,10 +364,26 @@ export default function Library() {
                             navigate(`/book/${book._id}`);
                           }}
                         >
-                          <FontAwesomeIcon icon={faEye} className="text-gray-600 hover:text-black" />
+                          <FontAwesomeIcon
+                            icon={faEye}
+                            className="text-gray-600 hover:text-black"
+                          />
                         </button>
-                        <button title="Add to Favourites">
-                          <FontAwesomeIcon icon={faHeart} className="text-gray-600 hover:text-red-500" />
+                        <button
+                          title="Add to Favourites"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleToggleFavorite(book._id);
+                          }}
+                        >
+                          <FontAwesomeIcon
+                            icon={faHeart}
+                            className={`transition ${
+                              wishlistIds.includes(book._id)
+                                ? "text-red-500"
+                                : "text-gray-600 hover:text-red-400"
+                            }`}
+                          />
                         </button>
                       </div>
                     </div>
@@ -243,7 +403,9 @@ export default function Library() {
                   key={i}
                   onClick={() => setPage(i + 1)}
                   className={`w-9 h-9 flex items-center justify-center rounded-full border border-orange-400 text-sm ${
-                    page === i + 1 ? "bg-primary text-white bg-orange-600" : "hover:bg-gray-200"
+                    page === i + 1
+                      ? "bg-primary text-white bg-orange-600"
+                      : "hover:bg-gray-200"
                   }`}
                 >
                   {i + 1}
