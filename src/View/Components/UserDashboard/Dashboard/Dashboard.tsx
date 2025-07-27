@@ -17,7 +17,7 @@ export default function Dashboard() {
   const [cards, setCards] = useState([]);
   const [dateTime, setDateTime] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
-
+  const [recentOrders, setRecentOrders] = useState<any[]>([]);
 
   const token = localStorage.getItem("token");
 
@@ -27,31 +27,31 @@ export default function Dashboard() {
     "Your order was placed successfully",
   ];
 
-useEffect(() => {
-  const fetchAll = async () => {
-    setIsLoading(true);
-    try {
-      await Promise.all([
-        fetchWishlist(),
-        fetchCart(),
-        fetchPendingBooks(),
-        fetchCards(),
-      ]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  useEffect(() => {
+    const fetchAll = async () => {
+      setIsLoading(true);
+      try {
+        await Promise.all([
+          fetchWishlist(),
+          fetchCart(),
+          fetchPendingBooks(),
+          fetchCards(),
+          fetchRecentOrders(),
+        ]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  fetchAll();
+    fetchAll();
 
-  const interval = setInterval(() => {
-    const now = new Date();
-    setDateTime(now.toLocaleString());
-  }, 1000);
+    const interval = setInterval(() => {
+      const now = new Date();
+      setDateTime(now.toLocaleString());
+    }, 1000);
 
-  return () => clearInterval(interval);
-}, []);
-
+    return () => clearInterval(interval);
+  }, []);
 
   const fetchWishlist = async () => {
     try {
@@ -94,16 +94,32 @@ useEffect(() => {
 
   const fetchCards = async () => {
     try {
-      const res = await axios.get<any>("http://192.168.1.188:5000/api/payment", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await axios.get<any>(
+        "http://192.168.1.188:5000/api/payment",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       setCards(res.data);
     } catch (err) {
       console.error("Failed to fetch cards", err);
     }
   };
 
-  
+  const fetchRecentOrders = async () => {
+    try {
+      const res = await axios.get<any []>(
+        "http://192.168.1.188:5000/api/orders/recent",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setRecentOrders(res.data);
+    } catch (err) {
+      console.error("Failed to fetch recent orders", err);
+    }
+  };
+
   return (
     <div className="p-6 bg-gradient-to-br from-gray-50 to-gray-200 min-h-screen font-['poppins'] relative">
       {/* Header */}
@@ -141,7 +157,9 @@ useEffect(() => {
                 ))}
               </ul>
               {notifications.length === 0 && (
-                <div className="px-4 py-3 text-sm text-gray-500">No new notifications</div>
+                <div className="px-4 py-3 text-sm text-gray-500">
+                  No new notifications
+                </div>
               )}
             </div>
           )}
@@ -150,41 +168,86 @@ useEffect(() => {
 
       {/* Stats Cards */}
       {isLoading ? (
-  <div className="flex justify-center items-center h-64">
-    <div className="animate-spin rounded-full h-12 w-12 border-4 border-orange-500 border-t-transparent"></div>
-  </div>
-) : (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
-        <StatCard
-          icon={faHeart}
-          label="Favorite Items"
-          count={wishlist.length}
-          bg="from-green-400 to-green-600"
-          iconColor="text-white"
-        />
-        <StatCard
-          icon={faShoppingCart}
-          label="Cart Items"
-          count={cart.length}
-          bg="from-teal-400 to-teal-600"
-          iconColor="text-white"
-        />
-        <StatCard
-          icon={faBook}
-          label="Pending Books"
-          count={pendingCount}
-          bg="from-sky-400 to-sky-600"
-          iconColor="text-white"
-        />
-        <StatCard
-          icon={faCreditCard}
-          label="Saved Cards"
-          count={cards.length}
-          bg="from-slate-400 to-slate-600"
-          iconColor="text-white"
-        />
-      </div>
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-orange-500 border-t-transparent"></div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
+          <StatCard
+            icon={faHeart}
+            label="Favorite Items"
+            count={wishlist.length}
+            bg="from-green-400 to-green-600"
+            iconColor="text-white"
+          />
+          <StatCard
+            icon={faShoppingCart}
+            label="Cart Items"
+            count={cart.length}
+            bg="from-teal-400 to-teal-600"
+            iconColor="text-white"
+          />
+          <StatCard
+            icon={faBook}
+            label="Pending Books"
+            count={pendingCount}
+            bg="from-sky-400 to-sky-600"
+            iconColor="text-white"
+          />
+          <StatCard
+            icon={faCreditCard}
+            label="Saved Cards"
+            count={cards.length}
+            bg="from-slate-400 to-slate-600"
+            iconColor="text-white"
+          />
+        </div>
       )}
+
+
+      {/* Recent Orders */}
+{!isLoading && (
+  <div className="mt-10">
+    <h2 className="text-2xl font-bold text-gray-800 mb-4">Recent Orders</h2>
+
+    {recentOrders.length === 0 ? (
+      <p className="text-gray-500">No orders placed in the last 2 days.</p>
+    ) : (
+      <div className="space-y-4">
+        {recentOrders.map((order) => (
+          <div
+            key={order._id}
+            className="bg-white rounded-xl shadow p-4 flex flex-col gap-4"
+          >
+            {order.books.map((book: any) => (
+              <div
+                key={book._id}
+                className="flex items-center gap-4 border rounded-lg p-3 bg-gray-50"
+              >
+                <img
+                  src={book.image}
+                  alt={book.title}
+                  className="w-20 h-24 object-cover rounded-md"
+                />
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-gray-800">{book.title}</h3>
+                  <p className="text-blue-600 font-bold">Rs {book.price}</p>
+                  <p className="text-sm text-gray-500">
+                    Ordered on:{" "}
+                    {new Date(order.createdAt).toLocaleDateString()}{" "}
+                    {new Date(order.createdAt).toLocaleTimeString()}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+)}
+
+
     </div>
   );
 }
@@ -195,16 +258,14 @@ function StatCard({
   count,
   bg,
   iconColor,
-
 }: {
   icon: any;
   label: string;
   count: number;
   bg: string;
   iconColor: string;
-
 }) {
-return (
+  return (
     <div
       className={`flex items-center rounded-2xl shadow-lg p-6 bg-gradient-to-br ${bg} hover:scale-[1.02] transition-transform duration-200 h-36`}
     >
