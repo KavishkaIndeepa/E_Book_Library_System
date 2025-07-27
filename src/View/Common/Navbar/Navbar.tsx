@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBars,
+  faChevronDown,
+  faTimes,
+} from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "../../../Assets/Images/Logo/BookTech.png";
+import { useLocation } from "react-router-dom";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -10,6 +15,7 @@ export default function Navbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -52,40 +58,78 @@ export default function Navbar() {
           <img src={Logo} alt="Logo" className="h-16" />
         </div>
         <ul className="flex space-x-6 text-lg font-poppins">
-          <li>
+          <li
+            className={`cursor-pointer px-3 py-2 rounded transition-all ${
+              location.pathname === "/"
+                ? "text-orange-500 font-semibold border-b-2 border-orange-500"
+                : "hover:bg-orange-400 hover:text-white"
+            }`}
+          >
             <Link to="/">Home</Link>
           </li>
-          <li>
+
+          <li
+            className={`cursor-pointer px-3 py-2 rounded transition-all ${
+              location.pathname === "/about"
+                ? "text-orange-500 font-semibold border-b-2 border-orange-500"
+                : "hover:bg-orange-400 hover:text-white"
+            }`}
+          >
             <Link to="/about">About</Link>
           </li>
-          <li>
+
+          <li
+            className={`cursor-pointer px-3 py-2 rounded transition-all ${
+              location.pathname === "/library"
+                ? "text-orange-500 font-semibold border-b-2 border-orange-500"
+                : "hover:bg-orange-400 hover:text-white"
+            }`}
+          >
             <Link to="/library">Library</Link>
           </li>
-          <li>
+
+          <li
+            className={`cursor-pointer px-3 py-2 rounded transition-all ${
+              location.pathname === "/contact"
+                ? "text-orange-500 font-semibold border-b-2 border-orange-500"
+                : "hover:bg-orange-400 hover:text-white"
+            }`}
+          >
             <Link to="/contact">Contact</Link>
           </li>
         </ul>
+
         <div className="relative">
           {user ? (
             <>
-              <img
-                src={
-                  user.profileImage ||
-                  `https://ui-avatars.com/api/?name=${user.name}`
-                }
-                alt="Profile"
-                className="h-10 w-10 rounded-full border-2 border-white shadow-md cursor-pointer"
+              <div
+                className="flex items-center gap-2 cursor-pointer"
                 onClick={toggleDropdown}
-              />
+              >
+                <img
+                  src={
+                    user.profileImage ||
+                    `https://ui-avatars.com/api/?name=${user.name}`
+                  }
+                  alt="Profile"
+                  className="h-10 w-10 rounded-full border-2 border-white shadow-md transition-transform hover:scale-105"
+                />
+                <FontAwesomeIcon
+                  icon={faChevronDown}
+                  className={`transition-transform duration-300 ${
+                    dropdownOpen ? "rotate-180" : ""
+                  }`}
+                />
+              </div>
               {dropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white text-black rounded-md shadow-lg z-50 overflow-hidden">
+                <div className="absolute right-0 mt-2 w-48 bg-white text-black rounded-xl overflow-hidden shadow-xl border border-gray-200 z-50">
                   <Link
                     to={
                       user?.role === "admin"
                         ? "/admin-dashboard"
                         : "/user-dashboard"
                     }
-                    className="block px-4 py-2 hover:bg-gray-100"
+                    className="block px-6 py-4 hover:bg-gray-100"
                     onClick={() => setDropdownOpen(false)}
                   >
                     Dashboard
