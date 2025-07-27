@@ -12,10 +12,14 @@ import axios from "axios";
 export default function Dashboard() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [wishlist, setWishlist] = useState<WishlistItem[]>([]);
+  const [cart, setCart] = useState<any[]>([]);
+  const [pendingCount, setPendingCount] = useState(0);
+  const [cards, setCards] = useState([]);
+  const [dateTime, setDateTime] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(true);
+
+
   const token = localStorage.getItem("token");
-   const [cart, setCart] = useState<any[]>([]);
-   const [pendingCount, setPendingCount] = useState(0);
-   const [cards, setCards] = useState([]);
 
   const notifications = [
     "Your book has been approved",
@@ -23,14 +27,33 @@ export default function Dashboard() {
     "Your order was placed successfully",
   ];
 
-    useEffect(() => {
-      fetchWishlist();
-      fetchCart();
-      fetchPendingBooks();
-      fetchCards();
-    }, []);
+useEffect(() => {
+  const fetchAll = async () => {
+    setIsLoading(true);
+    try {
+      await Promise.all([
+        fetchWishlist(),
+        fetchCart(),
+        fetchPendingBooks(),
+        fetchCards(),
+      ]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    const fetchWishlist = async () => {
+  fetchAll();
+
+  const interval = setInterval(() => {
+    const now = new Date();
+    setDateTime(now.toLocaleString());
+  }, 1000);
+
+  return () => clearInterval(interval);
+}, []);
+
+
+  const fetchWishlist = async () => {
     try {
       const res = await axios.get<WishlistItem[]>(
         "http://192.168.1.188:5000/api/wishlist",
@@ -41,14 +64,10 @@ export default function Dashboard() {
       setWishlist(res.data);
     } catch (err) {
       console.error("Failed to fetch wishlist", err);
-    } finally {
-      
     }
   };
- 
-  
-    const fetchCart = async () => {
-   
+
+  const fetchCart = async () => {
     try {
       const res = await axios.get<any>("http://192.168.1.188:5000/api/cart", {
         headers: { Authorization: `Bearer ${token}` },
@@ -56,39 +75,43 @@ export default function Dashboard() {
       setCart(res.data.items);
     } catch (err) {
       console.error("Failed to fetch cart", err);
-    } finally {
-    
     }
   };
-  
-  
-const fetchPendingBooks = async () => {
-  try {
-    const res = await axios.get<any>("http://192.168.1.188:5000/api/books/user/pending", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    setPendingCount(res.data.books.length);
-  } catch (err) {
-    console.error("Failed to fetch pending books", err);
-  }
-};
-  
-const fetchCards = async () => {
-  try {
-    const res = await axios.get<any>("http://192.168.1.188:5000/api/payment", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    setCards(res.data);
-  } catch (err) {
-    console.error("Failed to fetch cards", err);
-  }
-};
 
+  const fetchPendingBooks = async () => {
+    try {
+      const res = await axios.get<any>(
+        "http://192.168.1.188:5000/api/books/user/pending",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setPendingCount(res.data.books.length);
+    } catch (err) {
+      console.error("Failed to fetch pending books", err);
+    }
+  };
+
+  const fetchCards = async () => {
+    try {
+      const res = await axios.get<any>("http://192.168.1.188:5000/api/payment", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setCards(res.data);
+    } catch (err) {
+      console.error("Failed to fetch cards", err);
+    }
+  };
+
+  
   return (
-    <div className="p-6 bg-gray-50 min-h-screen font-['Quicksand'] relative">
+    <div className="p-6 bg-gradient-to-br from-gray-50 to-gray-200 min-h-screen font-['poppins'] relative">
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-semibold text-gray-800">Dashboard</h1>
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-800">Dashboard</h1>
+          <p className="text-sm text-gray-500">{dateTime}</p>
+        </div>
         <div className="relative">
           <button
             onClick={() => setShowNotifications((prev) => !prev)}
@@ -103,57 +126,65 @@ const fetchCards = async () => {
           </button>
 
           {showNotifications && (
-            <div className="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
-              <div className="px-4 py-2 font-semibold border-b">Notifications</div>
-              <ul className="max-h-64 overflow-y-auto">
+            <div className="absolute right-0 mt-3 w-72 bg-white border border-gray-200 rounded-xl shadow-xl z-20 overflow-hidden">
+              <div className="px-4 py-3 font-semibold text-gray-800 border-b bg-gray-50">
+                Notifications
+              </div>
+              <ul className="max-h-64 overflow-y-auto divide-y">
                 {notifications.map((note, index) => (
                   <li
                     key={index}
-                    className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+                    className="px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
                   >
                     {note}
                   </li>
                 ))}
               </ul>
               {notifications.length === 0 && (
-                <div className="px-4 py-2 text-sm text-gray-500">No new notifications</div>
+                <div className="px-4 py-3 text-sm text-gray-500">No new notifications</div>
               )}
             </div>
           )}
         </div>
       </div>
 
-      {/* Cards */}
+      {/* Stats Cards */}
+      {isLoading ? (
+  <div className="flex justify-center items-center h-64">
+    <div className="animate-spin rounded-full h-12 w-12 border-4 border-orange-500 border-t-transparent"></div>
+  </div>
+) : (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
         <StatCard
           icon={faHeart}
           label="Favorite Items"
           count={wishlist.length}
-          bg="from-green-300 to-green-500"
+          bg="from-green-400 to-green-600"
           iconColor="text-white"
         />
         <StatCard
           icon={faShoppingCart}
           label="Cart Items"
           count={cart.length}
-          bg="from-teal-300 to-teal-500"
+          bg="from-teal-400 to-teal-600"
           iconColor="text-white"
         />
         <StatCard
           icon={faBook}
           label="Pending Books"
           count={pendingCount}
-          bg="from-sky-300 to-sky-500"
+          bg="from-sky-400 to-sky-600"
           iconColor="text-white"
         />
         <StatCard
           icon={faCreditCard}
           label="Saved Cards"
           count={cards.length}
-          bg="from-slate-300 to-slate-500"
+          bg="from-slate-400 to-slate-600"
           iconColor="text-white"
         />
       </div>
+      )}
     </div>
   );
 }
@@ -164,23 +195,27 @@ function StatCard({
   count,
   bg,
   iconColor,
+
 }: {
   icon: any;
   label: string;
   count: number;
   bg: string;
   iconColor: string;
+
 }) {
-  return (
+return (
     <div
-      className={`flex items-center rounded-xl shadow-md p-5 bg-gradient-to-br ${bg} hover:scale-[1.01] transition-all duration-200`}
+      className={`flex items-center rounded-2xl shadow-lg p-6 bg-gradient-to-br ${bg} hover:scale-[1.02] transition-transform duration-200 h-36`}
     >
-      <div className={`text-3xl mr-4 ${iconColor}`}>
+      <div className={`text-4xl mr-6 ${iconColor}`}>
         <FontAwesomeIcon icon={icon} />
       </div>
       <div>
-        <div className="text-sm text-gray-700 font-medium">{label}</div>
-        <div className="text-xl font-bold text-gray-800">{count}</div>
+        <div className="text-md text-white font-semibold tracking-wide mb-1">
+          {label}
+        </div>
+        <div className="text-3xl font-bold text-white">{count}</div>
       </div>
     </div>
   );

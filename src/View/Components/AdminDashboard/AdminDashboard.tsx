@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from "react";
 import {
-  FaTachometerAlt,
-  FaBars,
-  FaSignOutAlt,
-  FaUsers,
-  FaBook,
-} from "react-icons/fa";
+  faTachometerAlt,
+  faBars,
+  faSignOutAlt,
+  faUsers,
+  faBook,
+  IconDefinition,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Outlet, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 export default function AdminDashboard() {
   const [collapsed, setCollapsed] = useState(false);
   const [user, setUser] = useState<any>(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -27,14 +31,14 @@ export default function AdminDashboard() {
   };
 
   const navItems = [
-    { label: "Dashboard", icon: <FaTachometerAlt />, path: "/admin-dashboard" },
-    { label: "Members", icon: <FaUsers />, path: "/admin-dashboard/members" },
-    { label: "Books", icon: <FaBook />, path: "/admin-dashboard/books" },
+    { label: "Dashboard", icon: faTachometerAlt, path: "/admin-dashboard" },
+    { label: "Members", icon: faUsers, path: "/admin-dashboard/members" },
+    { label: "Books", icon: faBook, path: "/admin-dashboard/books" },
     { path: "/admin-dashboard/books/add-books" },
   ];
 
   return (
-    <div className="flex min-h-screen bg-gray-100 font-['Quicksand']">
+    <div className="flex min-h-screen bg-gray-100 font-['poppins']">
       {/* Sidebar */}
       <div
         className={`transition-all duration-300 bg-[#0f0e47] text-white ${
@@ -46,7 +50,8 @@ export default function AdminDashboard() {
           {!collapsed && (
             <h1 className="text-2xl font-bold tracking-wide">Admin</h1>
           )}
-          <FaBars
+          <FontAwesomeIcon
+            icon={faBars}
             className="cursor-pointer text-xl hover:scale-110 transition"
             onClick={() => setCollapsed(!collapsed)}
           />
@@ -77,26 +82,48 @@ export default function AdminDashboard() {
 
         {/* Navigation */}
         <nav className="mt-4 flex-1 px-2 space-y-2">
-          {navItems.map((item, index) => (
-            <button
-              key={index}
-              onClick={() => navigate(item.path)}
-              className="flex items-center w-full text-left text-sm font-medium py-2.5 px-3 rounded-lg hover:bg-[#4a2b1c] transition-all duration-200 group"
-            >
-              <span className="text-lg">{item.icon}</span>
-              {!collapsed && (
-                <span className="ml-4 group-hover:text-orange-300">
-                  {item.label}
-                </span>
-              )}
-            </button>
-          ))}
+          {navItems.map((item, index) => {
+            const isActive = location.pathname === item.path;
+
+            return (
+              <button
+                key={index}
+                onClick={() => navigate(item.path)}
+                className={`flex items-center w-full text-left text-sm font-medium py-2.5 px-3 rounded-lg transition-all duration-300 group
+        ${
+          isActive
+            ? "bg-white/10 backdrop-blur-sm border-l-4 border-indigo-400 text-indigo-300 shadow-md"
+            : "hover:bg-white/10 hover:backdrop-blur-sm hover:ring-1 hover:ring-indigo-300 text-white"
+        }`}
+              >
+                <FontAwesomeIcon
+                  icon={item.icon as IconDefinition}
+                  className={`text-base transition duration-200 ${
+                    isActive
+                      ? "text-indigo-300"
+                      : "group-hover:text-indigo-200 text-white"
+                  }`}
+                />
+                {!collapsed && (
+                  <span
+                    className={`ml-4 transition duration-200 ${
+                      isActive
+                        ? "text-indigo-300 font-semibold"
+                        : "group-hover:text-indigo-200"
+                    }`}
+                  >
+                    {item.label}
+                  </span>
+                )}
+              </button>
+            );
+          })}
 
           <button
             onClick={handleLogout}
             className="flex items-center w-full text-left text-sm font-medium py-2.5 px-3 mt-6 rounded-lg hover:bg-red-600 transition-all duration-200 group"
           >
-            <FaSignOutAlt className="text-lg" />
+            <FontAwesomeIcon icon={faSignOutAlt} className="text-base" />
             {!collapsed && (
               <span className="ml-4 group-hover:text-white">Logout</span>
             )}

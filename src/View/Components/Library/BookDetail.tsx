@@ -10,6 +10,10 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { motion } from "framer-motion";
+import "aos/dist/aos.css";
+//@ts-ignore
+import AOS from "aos";
 
 export default function BookDetail() {
   const { id } = useParams<{ id: string }>();
@@ -24,13 +28,17 @@ export default function BookDetail() {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     fetchBook();
+    AOS.init({
+      duration: 1000,
+      easing: "ease-in-out",
+    });
   }, [id]);
 
   useEffect(() => {
-  if (book) {
-    checkIsFav();
-  }
-}, [book]);
+    if (book) {
+      checkIsFav();
+    }
+  }, [book]);
 
   const fetchBook = async () => {
     try {
@@ -98,7 +106,7 @@ export default function BookDetail() {
     }
   };
 
-   const checkIsFav = async () => {
+  const checkIsFav = async () => {
     const token = localStorage.getItem("token");
     if (!token || !id) return;
 
@@ -155,8 +163,8 @@ export default function BookDetail() {
 
   if (loading)
     return (
-      <div className="p-10 mt-24 mb-24 text-center text-gray-500">
-        Loading book...
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-orange-500 border-t-transparent"></div>
       </div>
     );
   if (error || !book)
@@ -173,17 +181,27 @@ export default function BookDetail() {
       <div className="flex flex-col md:flex-row gap-8 animate-fadeIn">
         {/* Book Image */}
         <div className="w-full md:w-1/2 flex justify-center">
-          <div className="rounded-lg overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300">
+          <motion.div
+            className="rounded-lg overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300"
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.8 }}
+          >
             <img
               src={imageSrc}
               alt={book.title}
               className="h-96 w-full object-cover"
             />
-          </div>
+          </motion.div>
         </div>
 
         {/* Book Info */}
-        <div className="w-full md:w-1/2 space-y-4">
+        <motion.div
+          className="w-full md:w-1/2 space-y-4"
+          initial={{ y: -30, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.8 }}
+        >
           <h1 className="text-3xl font-bold">{book.title}</h1>
           <p className="text-green-600 font-semibold">
             {isFree ? "Free to Download" : "Available in Stock"}
@@ -213,10 +231,10 @@ export default function BookDetail() {
                   : `$${book.price}`}
               </p>
               <div className="flex items-center gap-4">
-                <QuantitySelector
+                {/* <QuantitySelector
                   quantity={quantity}
                   setQuantity={setQuantity}
-                />
+                /> */}
                 <Button
                   className="bg-red-500 hover:bg-red-600 text-white"
                   text="Add To Cart"
@@ -227,7 +245,11 @@ export default function BookDetail() {
           )}
 
           <div className="flex items-center gap-4 mt-4">
-            <IconButton icon={faHeart} active={isFav} onClick={toggleWishlist} />
+            <IconButton
+              icon={faHeart}
+              active={isFav}
+              onClick={toggleWishlist}
+            />
             {isFree ? (
               <Button
                 icon={faDownload}
@@ -243,16 +265,16 @@ export default function BookDetail() {
               />
             )}
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* Book Meta Section */}
-      <SectionCard title="Book Information">
+      <SectionCard title="Book Information" data-aos="fade-up">
         <MetaGrid book={book} />
       </SectionCard>
 
       {/* Tab Section */}
-      <SectionCard>
+      <SectionCard data-aos="fade-up">
         <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
         <TabContent activeTab={activeTab} book={book} />
       </SectionCard>

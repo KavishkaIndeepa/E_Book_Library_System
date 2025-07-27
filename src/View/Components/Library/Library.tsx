@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import debounce from "lodash/debounce";
 import Swal from "sweetalert2";
+import { motion } from "framer-motion";
 
 export default function Library() {
   const [books, setBooks] = useState<any[]>([]);
@@ -23,7 +24,7 @@ export default function Library() {
   useEffect(() => {
     fetchBooks();
     fetchWishlist();
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    // window.scrollTo({ top: 0, behavior: "smooth" });
   }, [page]);
 
   const fetchBooks = async () => {
@@ -192,7 +193,12 @@ export default function Library() {
         }}
       >
         <div className="absolute inset-0 bg-black bg-opacity-60"></div>
-        <div className="relative z-10 text-center text-white px-4 max-w-2xl">
+        <motion.div
+          className="relative z-10 text-center text-white px-4 max-w-2xl"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+        >
           <h3 className="text-lg md:text-2xl font-medium mb-1 tracking-wide">
             Unlock the Power of Reading
           </h3>
@@ -204,14 +210,19 @@ export default function Library() {
             discounts. Whether you love fiction, non-fiction, or academic reads
             — there’s something here for everyone.
           </p>
-        </div>
+        </motion.div>
       </div>
 
       {/* Main Content */}
       <div className="mt-14 px-6 md:px-8">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar */}
-          <div className="lg:w-1/4 w-full space-y-6">
+          <motion.div className="lg:w-1/4 w-full space-y-6"
+          initial={{ opacity: 0, x: -30 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          >
             {/* Search */}
             <div>
               <h3 className="text-lg font-semibold border-b pb-2">Search</h3>
@@ -301,7 +312,7 @@ export default function Library() {
                 )}
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Book Grid */}
           <div className="lg:w-3/4 w-full">
@@ -310,8 +321,8 @@ export default function Library() {
               className="grid sm:grid-cols-2 md:grid-cols-3 gap-6"
             >
               {loading ? (
-                <div className="col-span-full text-center text-gray-500 py-12">
-                  Loading books...
+                <div className="flex justify-end items-center h-64">
+                  <div className="animate-spin rounded-full h-12 w-12 border-4 border-orange-500 border-t-transparent"></div>
                 </div>
               ) : filteredBooks.length > 0 ? (
                 filteredBooks.map((book) => (

@@ -10,6 +10,11 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import "aos/dist/aos.css";
+//@ts-ignore
+import AOS from "aos";
+
 
 export default function Home() {
   const [books, setBooks] = useState<any[]>([]);
@@ -41,14 +46,19 @@ export default function Home() {
   useEffect(() => {
     fetchBooks();
     window.scrollTo({ top: 0, behavior: "smooth" });
+      AOS.init({ duration: 1000, easing: "ease-in-out",});
   }, []);
 
   const fetchBooks = async () => {
     setLoading(true);
     try {
-      const res = await axios.get<{ books: any[] }>("http://192.168.1.188:5000/api/books?page=1&limit=12");
+      const res = await axios.get<{ books: any[] }>(
+        "http://192.168.1.188:5000/api/books?page=1&limit=12"
+      );
       const { books: fetchedBooks } = res.data;
-      const freeBooks = fetchedBooks.filter((book: any) => book.price === "Free");
+      const freeBooks = fetchedBooks.filter(
+        (book: any) => book.price === "Free"
+      );
       setBooks(freeBooks);
     } catch (err) {
       console.error("Failed to fetch books", err);
@@ -85,9 +95,20 @@ export default function Home() {
   const navigate = useNavigate();
 
   return (
-    <div className="mt-28 md:mt-12 mb-10 font-sans bg-white text-black">
+    <motion.div
+      className="mt-28 md:mt-12 mb-10 font-sans bg-white text-black"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+    >
       {/* Hero Section */}
-      <div className="w-full h-auto lg:h-screen mt-8 md:mt-12 px-4 md:px-8 flex items-center mb-8 lg:mb-0">
+      <motion.div
+        className="w-full h-auto lg:h-screen mt-8 md:mt-12 px-4 md:px-8 flex items-center mb-8 lg:mb-0"
+        initial={{ y: -30, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.8 }}
+      >
         <div className="w-full max-w-6xl rounded-2xl flex flex-col md:flex-row overflow-hidden">
           <div className="w-full md:w-1/2 p-6 mt-8 lg:mt-0 md:p-12 flex flex-col justify-center">
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 leading-tight">
@@ -106,36 +127,47 @@ export default function Home() {
               </span>
             </button>
           </div>
-          <div className="w-full md:w-1/2 flex justify-center items-center">
+          <motion.div
+            className="w-full md:w-1/2 flex justify-center items-center"
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.8 }}
+          >
             <img
               src={hero}
               alt="Bookshelf"
               className="w-full h-auto max-h-[500px] object-cover rounded-lg shadow-lg"
             />
-          </div>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Achievements */}
       <div className="w-full py-4 px-4 md:px-8">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
+          <div className="text-center mb-12" data-aos="fade-up">
             <h2 className="text-2xl md:text-4xl font-semibold text-[#333] inline-block">
               What you'll achieve by this book
             </h2>
             <div className="w-24 h-1 bg-orange-400 mx-auto mt-2" />
           </div>
           <div className="flex flex-col md:flex-row items-center gap-10">
-            <div className="w-full md:w-1/2">
+            <div className="w-full md:w-1/2" data-aos="fade-up">
               <img
                 src={hero}
                 alt="Reading"
                 className="rounded-xl w-full shadow-lg"
               />
             </div>
-            <div className="w-full md:w-1/2 grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div
+              className="w-full md:w-1/2 grid grid-cols-1 sm:grid-cols-2 gap-6"
+              data-aos="zoom-in"
+            >
               {[
-                { title: "Experience", desc: "Learn and evolve with stories..." },
+                {
+                  title: "Experience",
+                  desc: "Learn and evolve with stories...",
+                },
                 { title: "Motivation", desc: "Discover ideas that inspire..." },
                 { title: "Goals", desc: "Set and achieve new milestones..." },
                 { title: "Vision", desc: "Shape your outlook on life..." },
@@ -154,23 +186,23 @@ export default function Home() {
       </div>
 
       {/* Chapters */}
-      <div className="w-full py-4 px-4 md:px-8 bg-[#fdf6f3]">
+      <div className="w-full py-4 px-4 md:px-8 bg-[#ffffff]">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
+          <div className="text-center mb-12" data-aos="fade-up">
             <h2 className="text-2xl md:text-4xl font-semibold inline-block text-[#333]">
               Chapters We've Covered
             </h2>
             <div className="w-24 h-1 bg-orange-400 mx-auto mt-2" />
           </div>
           <div className="flex flex-col md:flex-row items-center gap-10">
-            <div className="w-full md:w-1/2">
+            <div className="w-full md:w-1/2" data-aos="fade-up">
               <img
                 src={hero}
                 alt="Book cover"
                 className="rounded-xl w-full shadow-lg"
               />
             </div>
-            <div className="w-full md:w-1/2 space-y-4">
+            <div className="w-full md:w-1/2 space-y-4" data-aos="zoom-in">
               {chapters.map((chapter, index) => (
                 <div
                   key={index}
@@ -207,7 +239,7 @@ export default function Home() {
       {/* Free Books */}
       <div className="w-full py-4 px-4 md:px-8">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
+          <div className="text-center mb-12" data-aos="fade-up">
             <h2 className="text-2xl md:text-4xl font-semibold text-[#333] inline-block">
               Read Some Books Free
             </h2>
@@ -273,6 +305,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-</div>
-  )
+    </motion.div>
+  );
 }

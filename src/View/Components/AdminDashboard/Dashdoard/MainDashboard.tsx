@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from "react";
-import {
-  FaBell,
-  FaUser,
-  FaBook,
-  FaClock,
-  FaDownload,
-  FaTimes,
-  FaCheck,
-} from "react-icons/fa";
 import axios from "axios";
 import Swal from "sweetalert2";
+import {
+  faBell,
+  faUser,
+  faBook,
+  faClock,
+  faDownload,
+  faTimes,
+  faCheck,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function MainDashboard() {
   const [showNotifications, setShowNotifications] = useState(false);
-  
 
   // Sample data (replace with real data via props or API)
   const [notifications, setNotifications] = useState<any[]>([]);
@@ -100,69 +100,67 @@ export default function MainDashboard() {
 
   // Approve book
   const handleApprove = async (id: string) => {
-  const result = await Swal.fire({
-    title: "Approve Book?",
-    text: "This book will be added to the library.",
-    icon: "question",
-    showCancelButton: true,
-    confirmButtonText: "Yes, approve it!",
-    cancelButtonText: "Cancel",
-  });
+    const result = await Swal.fire({
+      title: "Approve Book?",
+      text: "This book will be added to the library.",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Yes, approve it!",
+      cancelButtonText: "Cancel",
+    });
 
-  if (result.isConfirmed) {
-    try {
-      await axios.patch(
-        `http://192.168.1.188:5000/api/books/approve/${id}`,
-        null,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      await fetchBooks();
-      await fetchPendingBooks();
-      Swal.fire("Approved!", "The book has been approved.", "success");
-    } catch (err) {
-      console.error("Failed to approve book", err);
-      Swal.fire("Error", "Failed to approve the book", "error");
+    if (result.isConfirmed) {
+      try {
+        await axios.patch(
+          `http://192.168.1.188:5000/api/books/approve/${id}`,
+          null,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        await fetchBooks();
+        await fetchPendingBooks();
+        Swal.fire("Approved!", "The book has been approved.", "success");
+      } catch (err) {
+        console.error("Failed to approve book", err);
+        Swal.fire("Error", "Failed to approve the book", "error");
+      }
     }
-  }
-};
-
+  };
 
   // Reject book
-const handleReject = async (id: string) => {
-  const result = await Swal.fire({
-    title: "Reject Book?",
-    text: "This action cannot be undone.",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Yes, reject it!",
-    cancelButtonText: "Cancel",
-  });
+  const handleReject = async (id: string) => {
+    const result = await Swal.fire({
+      title: "Reject Book?",
+      text: "This action cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, reject it!",
+      cancelButtonText: "Cancel",
+    });
 
-  if (result.isConfirmed) {
-    try {
-      await axios.patch(
-        `http://192.168.1.188:5000/api/books/reject/${id}`,
-        null,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      await fetchBooks();
-      await fetchPendingBooks();
-      Swal.fire("Rejected!", "The book has been rejected.", "success");
-    } catch (err) {
-      console.error("Failed to reject book", err);
-      Swal.fire("Error", "Failed to reject the book", "error");
+    if (result.isConfirmed) {
+      try {
+        await axios.patch(
+          `http://192.168.1.188:5000/api/books/reject/${id}`,
+          null,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        await fetchBooks();
+        await fetchPendingBooks();
+        Swal.fire("Rejected!", "The book has been rejected.", "success");
+      } catch (err) {
+        console.error("Failed to reject book", err);
+        Swal.fire("Error", "Failed to reject the book", "error");
+      }
     }
-  }
-};
-
+  };
 
   function timeAgo(dateString: string): string {
     const date = new Date(dateString);
@@ -178,14 +176,17 @@ const handleReject = async (id: string) => {
   }
 
   return (
-    <div className="p-6 font-['Quicksand']">
+    <div className="p-6 font-['poppins']">
       {/* Header with Notification */}
       <div className="flex justify-end mb-6 relative">
         <div
           className="relative cursor-pointer"
           onClick={() => setShowNotifications(!showNotifications)}
         >
-          <FaBell className="text-2xl text-gray-600 hover:text-orange-600" />
+          <FontAwesomeIcon
+            icon={faBell}
+            className="text-2xl text-gray-600 hover:text-orange-600"
+          />
           <span className="absolute -top-2 -right-2 text-xs bg-red-500 text-white rounded-full px-1.5">
             {notifications.length}
           </span>
@@ -219,7 +220,10 @@ const handleReject = async (id: string) => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
             <div className="bg-blue-100 p-5 rounded-xl shadow hover:shadow-md transition duration-300">
               <div className="flex items-center gap-4">
-                <FaUser className="text-3xl text-blue-600" />
+                <FontAwesomeIcon
+                  icon={faUser}
+                  className="text-3xl text-blue-600"
+                />
                 <div>
                   <p className="text-sm text-gray-500">Members</p>
                   <h2 className="text-2xl font-bold text-blue-700">
@@ -230,7 +234,10 @@ const handleReject = async (id: string) => {
             </div>
             <div className="bg-green-100 p-5 rounded-xl shadow hover:shadow-md transition duration-300">
               <div className="flex items-center gap-4">
-                <FaBook className="text-3xl text-green-600" />
+                <FontAwesomeIcon
+                  icon={faBook}
+                  className="text-3xl text-green-600"
+                />
                 <div>
                   <p className="text-sm text-gray-500">Total Books</p>
                   <h2 className="text-2xl font-bold text-green-700">
@@ -241,7 +248,10 @@ const handleReject = async (id: string) => {
             </div>
             <div className="bg-yellow-100 p-5 rounded-xl shadow hover:shadow-md transition duration-300">
               <div className="flex items-center gap-4">
-                <FaClock className="text-3xl text-yellow-600" />
+                <FontAwesomeIcon
+                  icon={faClock}
+                  className="text-3xl text-yellow-600"
+                />
                 <div>
                   <p className="text-sm text-gray-500">Pending Books</p>
                   <h2 className="text-2xl font-bold text-yellow-700">
@@ -263,81 +273,84 @@ const handleReject = async (id: string) => {
               <div className="overflow-x-auto rounded-md border border-gray-200">
                 <div className="min-w-[600px]">
                   <table className="w-full ">
-                  <thead>
-                    <tr className="bg-gray-100 text-left">
-                      <th className="p-3 text-sm font-semibold text-gray-600">
-                        Member Name
-                      </th>
-                      <th className="p-3 text-sm font-semibold text-gray-600">
-                        Book Name
-                      </th>
-                      <th className="p-3 text-sm font-semibold text-gray-600">
-                        Cover
-                      </th>
-                      <th className="p-3 text-sm font-semibold text-gray-600">
-                        PDF
-                      </th>
-                      <th className="p-3 text-sm font-semibold text-gray-600">
-                        Price
-                      </th>
-                      <th className="p-3 text-sm font-semibold text-gray-600">
-                        Actions
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {pendingBooks.map((book, index) => (
-                      <tr key={index} className="border-t">
-                        <td className="p-3 text-sm">
-                          {book.userId
-                            ? users.find((user) => user._id === book.userId)
-                                ?.name || "Unknown"
-                            : "Admin"}
-                        </td>
-                        <td className="p-3 text-sm">{book.title}</td>
-                        <td className="p-3 text-sm">
-                          {book.image ? (
-                            <img
-                              src={
-                                book.image.startsWith("data:image")
-                                  ? book.image
-                                  : `data:image/jpeg;base64,${book.image}`
-                              }
-                              alt="Book Cover"
-                              className="h-14 w-10 object-cover rounded"
-                            />
-                          ) : (
-                            <span className="text-xs text-gray-400 italic">
-                              No Image
-                            </span>
-                          )}
-                        </td>
-                        <td className="p-3 text-sm">
-                          <a href={book.pdf} download>
-                            <FaDownload className="text-green-600 text-lg hover:text-green-800" />
-                          </a>
-                        </td>
-                        <td className="p-3 text-sm">$ {book.price}</td>
-                        <td className="p-3 text-sm flex gap-3">
-                          <button
-                            className="text-green-600 hover:text-green-800 text-lg"
-                            title="Accept"
-                            onClick={() => handleApprove(book._id)}
-                          >
-                            <FaCheck />
-                          </button>
-                          <button
-                            className="text-red-500 hover:text-red-700 text-lg"
-                            title="Decline"
-                            onClick={() => handleReject(book._id)}
-                          >
-                            <FaTimes />
-                          </button>
-                        </td>
+                    <thead>
+                      <tr className="bg-gray-100 text-left">
+                        <th className="p-3 text-sm font-semibold text-gray-600">
+                          Member Name
+                        </th>
+                        <th className="p-3 text-sm font-semibold text-gray-600">
+                          Book Name
+                        </th>
+                        <th className="p-3 text-sm font-semibold text-gray-600">
+                          Cover
+                        </th>
+                        <th className="p-3 text-sm font-semibold text-gray-600">
+                          PDF
+                        </th>
+                        <th className="p-3 text-sm font-semibold text-gray-600">
+                          Price
+                        </th>
+                        <th className="p-3 text-sm font-semibold text-gray-600">
+                          Actions
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {pendingBooks.map((book, index) => (
+                        <tr key={index} className="border-t">
+                          <td className="p-3 text-sm">
+                            {book.userId
+                              ? users.find((user) => user._id === book.userId)
+                                  ?.name || "Unknown"
+                              : "Admin"}
+                          </td>
+                          <td className="p-3 text-sm">{book.title}</td>
+                          <td className="p-3 text-sm">
+                            {book.image ? (
+                              <img
+                                src={
+                                  book.image.startsWith("data:image")
+                                    ? book.image
+                                    : `data:image/jpeg;base64,${book.image}`
+                                }
+                                alt="Book Cover"
+                                className="h-14 w-10 object-cover rounded"
+                              />
+                            ) : (
+                              <span className="text-xs text-gray-400 italic">
+                                No Image
+                              </span>
+                            )}
+                          </td>
+                          <td className="p-3 text-sm">
+                            <a href={book.pdf} download>
+                              <FontAwesomeIcon
+                                icon={faDownload}
+                                className="text-green-600 text-lg hover:text-green-800"
+                              />
+                            </a>
+                          </td>
+                          <td className="p-3 text-sm">$ {book.price}</td>
+                          <td className="p-3 text-sm flex gap-3">
+                            <button
+                              className="text-green-600 hover:text-green-800 text-lg"
+                              title="Accept"
+                              onClick={() => handleApprove(book._id)}
+                            >
+                              <FontAwesomeIcon icon={faCheck} />
+                            </button>
+                            <button
+                              className="text-red-500 hover:text-red-700 text-lg"
+                              title="Decline"
+                              onClick={() => handleReject(book._id)}
+                            >
+                              <FontAwesomeIcon icon={faTimes} />
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             )}

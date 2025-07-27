@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
+import {
+  faEdit,
+  faTrash,
+  faPlus,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function AdminBooks() {
   const [books, setBooks] = useState<any[]>([]);
@@ -78,7 +83,7 @@ export default function AdminBooks() {
           onClick={() => navigate("/admin-dashboard/add-books")}
           className="bg-orange-600 hover:bg-orange-700 text-white px-5 py-2 rounded-lg shadow flex items-center gap-2 transition-all duration-200"
         >
-          <FaPlus className="text-sm" />
+          <FontAwesomeIcon icon={faPlus} className="text-sm" />
           <span>Add New Book</span>
         </button>
       </div>
@@ -95,11 +100,21 @@ export default function AdminBooks() {
               <table className="w-full">
                 <thead>
                   <tr className="bg-gray-100 text-left">
-                    <th className="p-3 text-sm font-semibold text-gray-600">Title</th>
-                    <th className="p-3 text-sm font-semibold text-gray-600">Image</th>
-                    <th className="p-3 text-sm font-semibold text-gray-600">Price</th>
-                    <th className="p-3 text-sm font-semibold text-gray-600">Category</th>
-                    <th className="p-3 text-sm font-semibold text-gray-600">Actions</th>
+                    <th className="p-3 text-sm font-semibold text-gray-600">
+                      Title
+                    </th>
+                    <th className="p-3 text-sm font-semibold text-gray-600">
+                      Image
+                    </th>
+                    <th className="p-3 text-sm font-semibold text-gray-600">
+                      Price
+                    </th>
+                    <th className="p-3 text-sm font-semibold text-gray-600">
+                      Category
+                    </th>
+                    <th className="p-3 text-sm font-semibold text-gray-600">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -125,7 +140,9 @@ export default function AdminBooks() {
                               className="h-14 w-10 object-cover rounded"
                             />
                           ) : (
-                            <span className="text-xs text-gray-400 italic">No Image</span>
+                            <span className="text-xs text-gray-400 italic">
+                              No Image
+                            </span>
                           )}
                         </td>
                         <td className="p-3 text-sm">
@@ -142,14 +159,14 @@ export default function AdminBooks() {
                               navigate(`/admin-dashboard/add-books/${book._id}`)
                             }
                           >
-                            <FaEdit />
+                            <FontAwesomeIcon icon={faEdit} />
                           </button>
                           <button
                             title="Delete Book"
                             className="text-red-500 hover:text-red-700"
                             onClick={() => handleDelete(book._id)}
                           >
-                            <FaTrash />
+                            <FontAwesomeIcon icon={faTrash} />
                           </button>
                         </td>
                       </tr>
@@ -162,19 +179,21 @@ export default function AdminBooks() {
             {/* Pagination */}
             {totalPages > 1 && (
               <div className="flex justify-center mt-6 space-x-2">
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((num) => (
-                  <button
-                    key={num}
-                    onClick={() => setCurrentPage(num)}
-                    className={`px-3 py-1 rounded-full text-sm font-medium shadow-md transition-all duration-200 ${
-                      currentPage === num
-                        ? "bg-orange-600 text-white"
-                        : "bg-gray-200 hover:bg-gray-300"
-                    }`}
-                  >
-                    {num}
-                  </button>
-                ))}
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                  (num) => (
+                    <button
+                      key={num}
+                      onClick={() => setCurrentPage(num)}
+                      className={`px-3 py-1 rounded-full text-sm font-medium shadow-md transition-all duration-200 ${
+                        currentPage === num
+                          ? "bg-orange-600 text-white"
+                          : "bg-gray-200 hover:bg-gray-300"
+                      }`}
+                    >
+                      {num}
+                    </button>
+                  )
+                )}
               </div>
             )}
           </>

@@ -2,11 +2,18 @@ import React, { useEffect } from "react";
 import Main from "../../../Assets/Images/About/main.jpg";
 import Sub from "../../../Assets/Images/About/sub.jpg";
 import "./About.css";
+import { motion } from "framer-motion";
+import "aos/dist/aos.css";
+//@ts-ignore
+import AOS from "aos";
 
 export default function About() {
-
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
+    AOS.init({
+      duration: 1000,
+      easing: "ease-in-out",
+    });
   }, []);
 
   return (
@@ -14,15 +21,25 @@ export default function About() {
       {/* Hero Section */}
       <div className="w-full bg-white h-auto lg:h-screen mt-8 md:mt-12 px-4 md:px-8 flex flex-col-reverse lg:flex-row items-center gap-10">
         {/* Left Section - Image */}
-        <div className="w-full md:w-1/2 flex justify-center items-center">
-            <img
-              src={Main}
-              alt="Bookshelf"
-              className="w-full h-auto max-h-[500px] object-cover rounded-lg shadow-lg"
-            />
-          </div>
+        <motion.div
+          className="w-full md:w-1/2 flex justify-center items-center"
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.8 }}
+        >
+          <img
+            src={Main}
+            alt="Bookshelf"
+            className="w-full h-auto max-h-[500px] object-cover rounded-lg shadow-lg"
+          />
+        </motion.div>
         {/* Right Section - Text */}
-        <div className="w-full lg:w-1/2 text-center lg:text-left">
+        <motion.div
+          className="w-full lg:w-1/2 text-center lg:text-left"
+          initial={{ y: -30, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.8 }}
+        >
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             About The Readit <br /> Books Store
           </h2>
@@ -39,11 +56,11 @@ export default function About() {
             next favorite story, our library is here to support your reading
             journey — anytime, anywhere.
           </p>
-        </div>
+        </motion.div>
       </div>
 
       {/* Sub Section - Promo Banner */}
-      <div className=" px-4 md:px-8">
+      <div className=" px-4 md:px-8" data-aos="fade-up">
         <div
           className="relative w-full h-[300px] md:h-[300px] rounded-lg overflow-hidden mt-12 flex items-center justify-center"
           style={{
@@ -58,7 +75,10 @@ export default function About() {
           <div className="absolute inset-0 bg-black bg-opacity-60"></div>
 
           {/* Promo Content */}
-          <div className="relative z-10 text-center text-white px-4 max-w-2xl">
+          <div
+            className="relative z-10 text-center text-white px-4 max-w-2xl"
+            data-aos="fade-right"
+          >
             <h3 className="text-lg md:text-2xl font-medium mb-1 tracking-wide">
               Get 25% Off
             </h3>
@@ -74,10 +94,10 @@ export default function About() {
 
       {/* customer feedback */}
       <div className="mt-14">
-        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 text-center">
+        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 text-center" data-aos="fade-up">
           What Our Customers Say
         </h2>
-        <p className="text-gray-600 mb-8 text-center max-w-xl mx-auto">
+        <p className="text-gray-600 mb-8 text-center max-w-xl mx-auto" data-aos="fade-up">
           Discover why our readers love us! From our vast collection to seamless
           reading experience, hear directly from those who have explored our
           library.

@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { a } from "framer-motion/dist/types.d-Bq-Qm38R";
+import {
+  faArrowLeft
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function AddBooks() {
   const [bookImage, setBookImage] = useState<string | null>(null);
@@ -180,13 +182,13 @@ export default function AddBooks() {
   };
 
   return (
-    <div className="p-6 font-['Quicksand'] w-full">
+    <div className="p-6 font-['poppins'] w-full">
       <div className="flex items-center gap-4 mb-6">
         <button
           onClick={() => navigate(-1)}
           className="text-gray-600 hover:text-orange-600 text-lg"
         >
-          <FaArrowLeft />
+          <FontAwesomeIcon icon={faArrowLeft} />
         </button>
         <h2 className="text-2xl font-bold text-gray-700">
           {isEditMode ? "Edit Book" : "Add New Book"}

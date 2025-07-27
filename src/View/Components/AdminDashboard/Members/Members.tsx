@@ -1,7 +1,10 @@
 import React, { useEffect } from "react";
-import { FaTrash } from "react-icons/fa";
 import axios from "axios";
 import Swal from "sweetalert2";
+import {
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Members() {
   const [members, setMembers] = React.useState<any[]>([]);
@@ -121,7 +124,7 @@ export default function Members() {
                             className="text-red-500 hover:text-red-700"
                             onClick={() => handleDelete(member._id)}
                           >
-                            <FaTrash />
+                            <FontAwesomeIcon icon={faTrash} />
                           </button>
                         </td>
                       </tr>
