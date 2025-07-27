@@ -27,7 +27,7 @@ export default function Footer() {
 
         {/* Quick Links */}
         {/* Quick Links */}
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-start md:items-center">
           <h2 className="text-xl font-bold mb-4">Quick Links</h2>
           <ul className="space-y-2 text-gray-400 text-center">
             <li>

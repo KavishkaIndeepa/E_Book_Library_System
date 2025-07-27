@@ -3,6 +3,9 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import Swal from "sweetalert2";
 import "./Payment.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import { motion, AnimatePresence } from "framer-motion";
 
 type CardType = {
   _id: string;
@@ -23,7 +26,7 @@ export default function Payment() {
 
   const [cards, setCards] = useState<CardType[]>([]);
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
-
+  const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -33,12 +36,9 @@ export default function Payment() {
   const fetchCards = async () => {
     if (!token) return;
     try {
-      const res = await axios.get<any[]>(
-        "http://192.168.1.188:5000/api/payment",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const res = await axios.get<CardType[]>("http://192.168.1.188:5000/api/payment", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setCards(res.data);
     } catch (err) {
       console.error("Error fetching cards", err);
@@ -53,11 +53,9 @@ export default function Payment() {
 
     try {
       if (selectedCardId) {
-        await axios.put(
-          `http://192.168.1.188:5000/api/payment/${selectedCardId}`,
-          data,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        await axios.put(`http://192.168.1.188:5000/api/payment/${selectedCardId}`, data, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         Swal.fire("Updated", "Card updated successfully", "success");
       } else {
         await axios.post("http://192.168.1.188:5000/api/payment", data, {
@@ -85,10 +83,9 @@ export default function Payment() {
   const handleDeleteCard = async () => {
     if (!selectedCardId || !token) return;
     try {
-      await axios.delete(
-        `http://192.168.1.188:5000/api/payment/${selectedCardId}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await axios.delete(`http://192.168.1.188:5000/api/payment/${selectedCardId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       Swal.fire("Deleted", "Card removed.", "success");
       reset();
       setSelectedCardId(null);
@@ -98,53 +95,99 @@ export default function Payment() {
     }
   };
 
+  const handlePrevCard = () => {
+    setCurrentCardIndex((prev) => (prev === 0 ? cards.length - 1 : prev - 1));
+  };
+
+  const handleNextCard = () => {
+    setCurrentCardIndex((prev) => (prev === cards.length - 1 ? 0 : prev + 1));
+  };
+
   return (
     <div className="flex flex-col md:flex-row justify-center items-start min-h-screen bg-gray-100 p-4 sm:p-6 gap-6">
-      {/* Left: Card Previews */}
-      <div className="w-full md:w-1/2 space-y-6">
-        {cards.map((card) => (
-          <div
-            key={card._id}
-            onClick={() => handleSelectCard(card)}
-            className="relative w-full h-56 cursor-pointer group [perspective:1000px]"
-          >
-            <div className="relative w-full h-full transition-transform duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
-              {/* Front Side */}
-              <div className="absolute w-full h-full bg-white/10 backdrop-blur-md border border-white/30 rounded-xl shadow-2xl text-white p-6 [backface-visibility:hidden] bg-gradient-to-br from-blue-500/40 to-black">
-                <div className="flex justify-between items-center mb-6">
-                  <div className="w-12 h-8 bg-yellow-300 rounded-sm shadow-inner"></div>
-                  <span className="text-2xl font-bold tracking-widest">
-                    VISA
-                  </span>
-                </div>
-                <div className="text-2xl tracking-widest font-mono mb-6">
-                  {card.cardNumber}
-                </div>
-                <div className="flex justify-between text-sm font-semibold">
-                  <div>{card.cardHolder.toUpperCase()}</div>
-                  <div>{card.expiry}</div>
-                </div>
-              </div>
+      {/* Left: Card Preview */}
+      <div className="w-full md:w-1/2 flex flex-col items-center space-y-4 justify-center">
+        {cards.length > 0 && (
+          <div className="relative w-full max-w-md h-56">
+            {/* Arrows */}
+            <button
+              onClick={handlePrevCard}
+              className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full z-10"
+            >
+              <FontAwesomeIcon icon={faChevronLeft} />
+            </button>
 
-              {/* Back Side */}
-              <div className="absolute w-full h-full bg-white/10 backdrop-blur-md border border-white/30 rounded-xl shadow-2xl text-white p-6 [transform:rotateY(180deg)] [backface-visibility:hidden] bg-gradient-to-br from-gray-800/40 to-black/60">
-                <div className="w-full h-10 bg-black mb-6 rounded"></div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">CVV</span>
-                  <span className="text-lg font-semibold tracking-widest">
-                    {card.cvv}
-                  </span>
+            <button
+              onClick={handleNextCard}
+              className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full z-10"
+            >
+              <FontAwesomeIcon icon={faChevronRight} />
+            </button>
+
+            {/* Animated Card */}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={cards[currentCardIndex]._id}
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -50 }}
+                transition={{ duration: 0.4 }}
+                onClick={() => handleSelectCard(cards[currentCardIndex])}
+                className="group w-full h-full cursor-pointer [perspective:1000px] px-10"
+              >
+                <div className="relative w-full h-full transition-transform duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
+                  {/* Front */}
+                  <div className="absolute w-full h-full bg-white/10 backdrop-blur-md border border-white/30 rounded-xl shadow-2xl text-white p-6 [backface-visibility:hidden] bg-gradient-to-br from-blue-500/40 to-black">
+                    <div className="flex justify-between items-center mb-6">
+                      <div className="w-12 h-8 bg-yellow-300 rounded-sm shadow-inner"></div>
+                      <span className="text-2xl font-bold tracking-widest">VISA</span>
+                    </div>
+                    <div className="text-2xl tracking-widest font-mono mb-6">
+                      {cards[currentCardIndex].cardNumber}
+                    </div>
+                    <div className="flex justify-between text-sm font-semibold">
+                      <div>{cards[currentCardIndex].cardHolder.toUpperCase()}</div>
+                      <div>{cards[currentCardIndex].expiry}</div>
+                    </div>
+                  </div>
+
+                  {/* Back */}
+                  <div className="absolute w-full h-full bg-white/10 backdrop-blur-md border border-white/30 rounded-xl shadow-2xl text-white p-6 [transform:rotateY(180deg)] [backface-visibility:hidden] bg-gradient-to-br from-gray-800/40 to-black/60">
+                    <div className="w-full h-10 bg-black mb-6 rounded"></div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">CVV</span>
+                      <span className="text-lg font-semibold tracking-widest">
+                        {cards[currentCardIndex].cvv}
+                      </span>
+                    </div>
+                    <div className="absolute bottom-4 right-4 text-sm font-light text-gray-300">
+                      VISA SECURE
+                    </div>
+                  </div>
                 </div>
-                <div className="absolute bottom-4 right-4 text-sm font-light text-gray-300">
-                  VISA SECURE
-                </div>
-              </div>
-            </div>
+              </motion.div>
+            </AnimatePresence>
           </div>
-        ))}
+        )}
+
+        {/* Dots */}
+        {cards.length > 1 && (
+          <div className="flex justify-center mt-2 space-x-2">
+            {cards.map((_, index) => (
+              <span
+                key={index}
+                className={`text-xl ${
+                  index === currentCardIndex ? "text-blue-600" : "text-gray-400"
+                }`}
+              >
+                {index === currentCardIndex ? "●" : "○"}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* Right: Form */}
+      {/* Right: Payment Form */}
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="bg-white p-6 rounded-lg shadow-md w-full md:w-1/2"
@@ -165,9 +208,7 @@ export default function Payment() {
             className="w-full border px-3 py-2 rounded-md"
           />
           {errors.cardHolder && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.cardHolder.message as string}
-            </p>
+            <p className="text-red-500 text-sm mt-1">{errors.cardHolder.message as string}</p>
           )}
         </div>
 
@@ -192,17 +233,13 @@ export default function Payment() {
             className="w-full border px-3 py-2 rounded-md"
           />
           {errors.cardNumber && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.cardNumber.message as string}
-            </p>
+            <p className="text-red-500 text-sm mt-1">{errors.cardNumber.message as string}</p>
           )}
         </div>
 
         <div className="flex gap-4 mb-4">
           <div className="w-1/2">
-            <label className="block text-sm font-medium mb-1">
-              Valid Through
-            </label>
+            <label className="block text-sm font-medium mb-1">Valid Through</label>
             <input
               type="text"
               placeholder="MM/YY"
@@ -224,9 +261,7 @@ export default function Payment() {
               className="w-full border px-3 py-2 rounded-md"
             />
             {errors.expiry && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.expiry.message as string}
-              </p>
+              <p className="text-red-500 text-sm mt-1">{errors.expiry.message as string}</p>
             )}
           </div>
 
@@ -245,9 +280,7 @@ export default function Payment() {
               className="w-full border px-3 py-2 rounded-md"
             />
             {errors.cvv && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.cvv.message as string}
-              </p>
+              <p className="text-red-500 text-sm mt-1">{errors.cvv.message as string}</p>
             )}
           </div>
         </div>
