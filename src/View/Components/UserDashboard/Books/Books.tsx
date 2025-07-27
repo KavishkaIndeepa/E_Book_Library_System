@@ -20,12 +20,13 @@ const fetchBooks = async () => {
   setLoading(true);
   try {
     const token = localStorage.getItem("token");
-    const res = await axios.get("http://192.168.1.188:5000/api/books/user/pending", {
+    const res = await axios.get<any>("http://192.168.1.188:5000/api/books/user/pending", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-    setBooks(Array.isArray(res.data) ? res.data : []);
+   setBooks(Array.isArray(res.data.books) ? res.data.books : []);
+   console.log("Fetched books:", res.data);
   } catch (err) {
     console.error("Failed to fetch books", err);
   } finally {

@@ -27,6 +27,7 @@ export default function AddUserBooks() {
       availability: "",
     },
   });
+  const [loading, setLoading] = useState(false);
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -132,6 +133,7 @@ export default function AddUserBooks() {
   };
 
   const handleSubmit = async () => {
+    setLoading(true);
     const payload = {
       title: form.title,
       price: form.price,
@@ -172,6 +174,8 @@ export default function AddUserBooks() {
       setTimeout(() => navigate("/user-dashboard/userBooks"), 2000);
     } catch (err) {
       Swal.fire("Error", "Failed to save the book.", "error");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -330,9 +334,39 @@ export default function AddUserBooks() {
       <div className="mt-8">
         <button
           onClick={handleSubmit}
-          className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg shadow text-sm font-semibold transition-all duration-200"
+          disabled={loading}
+          className={`bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg shadow text-sm font-semibold transition-all duration-200 ${
+            loading ? "opacity-60 cursor-not-allowed" : ""
+          }`}
         >
-          {isEditMode ? "Update Book" : "Save Book"}
+          {loading ? (
+            <span className="flex items-center gap-2">
+              <svg
+                className="w-4 h-4 animate-spin"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="white"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="white"
+                  d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 100 16v-4l-3 3 3 3v-4a8 8 0 01-8-8z"
+                ></path>
+              </svg>
+              Saving...
+            </span>
+          ) : isEditMode ? (
+            "Update Book"
+          ) : (
+            "Save Book"
+          )}
         </button>
       </div>
     </div>

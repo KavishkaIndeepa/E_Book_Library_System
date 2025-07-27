@@ -28,6 +28,7 @@ export default function AddBooks() {
       availability: "",
     },
   });
+  const [loading, setLoading] = useState(false);
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -49,57 +50,58 @@ export default function AddBooks() {
   ];
 
   const fetchBookDetails = async (bookId: string) => {
-  try {
-    const res = await axios.get(`http://192.168.1.188:5000/api/books/${bookId}`);
-    const book = res.data as {
-      title?: string;
-      price?: string;
-      category?: string;
-      story?: string;
-      description?: string;
-      status?: string;
-      author?: string;
-      image?: string | null;
-      pdf?: string | null;
-      meta?: {
-        sku?: string;
-        tags?: string;
-        format?: string;
-        pages?: string;
-        publishYear?: string;
-        language?: string;
-        country?: string;
-        availability?: string;
+    try {
+      const res = await axios.get(
+        `http://192.168.1.188:5000/api/books/${bookId}`
+      );
+      const book = res.data as {
+        title?: string;
+        price?: string;
+        category?: string;
+        story?: string;
+        description?: string;
+        status?: string;
+        author?: string;
+        image?: string | null;
+        pdf?: string | null;
+        meta?: {
+          sku?: string;
+          tags?: string;
+          format?: string;
+          pages?: string;
+          publishYear?: string;
+          language?: string;
+          country?: string;
+          availability?: string;
+        };
       };
-    };
 
-    setForm({
-      title: book.title || "",
-      price: book.price || "",
-      category: book.category || "",
-      story: book.story || "",
-      description: book.description || "",
-      status: book.status || "added",
-      author: book.author || "",
-      meta: {
-        sku: book.meta?.sku || "",
-        tags: book.meta?.tags || "",
-        format: book.meta?.format || "",
-        pages: book.meta?.pages || "",
-        publishYear: book.meta?.publishYear || "",
-        language: book.meta?.language || "",
-        country: book.meta?.country || "",
-        availability: book.meta?.availability || "",
-      },
-    });
+      setForm({
+        title: book.title || "",
+        price: book.price || "",
+        category: book.category || "",
+        story: book.story || "",
+        description: book.description || "",
+        status: book.status || "added",
+        author: book.author || "",
+        meta: {
+          sku: book.meta?.sku || "",
+          tags: book.meta?.tags || "",
+          format: book.meta?.format || "",
+          pages: book.meta?.pages || "",
+          publishYear: book.meta?.publishYear || "",
+          language: book.meta?.language || "",
+          country: book.meta?.country || "",
+          availability: book.meta?.availability || "",
+        },
+      });
 
-    setBookImage(book.image || null);
-    setBookPdf(book.pdf || null);
-  } catch (err) {
-    console.error("Failed to fetch book", err);
-  }
-};
-
+      setBookImage(book.image || null);
+      setBookPdf(book.pdf || null);
+    } catch (err) {
+      console.error("Failed to fetch book", err);
+    }
+  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -131,6 +133,7 @@ export default function AddBooks() {
   };
 
   const handleSubmit = async () => {
+    setLoading(true);
     const payload = {
       title: form.title,
       price: form.price,
@@ -161,12 +164,18 @@ export default function AddBooks() {
         );
         Swal.fire("Updated!", "Book updated successfully.", "success");
       } else {
-        await axios.post("http://192.168.1.188:5000/api/books/", payload, config);
+        await axios.post(
+          "http://192.168.1.188:5000/api/books/",
+          payload,
+          config
+        );
         Swal.fire("Saved!", "Book added successfully.", "success");
       }
       setTimeout(() => navigate("/admin-dashboard/books"), 2000);
     } catch (err) {
       Swal.fire("Error", "Failed to save the book.", "error");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -325,9 +334,39 @@ export default function AddBooks() {
       <div className="mt-8">
         <button
           onClick={handleSubmit}
-          className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg shadow text-sm font-semibold transition-all duration-200"
+          disabled={loading}
+          className={`bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg shadow text-sm font-semibold transition-all duration-200 ${
+            loading ? "opacity-60 cursor-not-allowed" : ""
+          }`}
         >
-          {isEditMode ? "Update Book" : "Save Book"}
+          {loading ? (
+            <span className="flex items-center gap-2">
+              <svg
+                className="w-4 h-4 animate-spin"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="white"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="white"
+                  d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 100 16v-4l-3 3 3 3v-4a8 8 0 01-8-8z"
+                ></path>
+              </svg>
+              Saving...
+            </span>
+          ) : isEditMode ? (
+            "Update Book"
+          ) : (
+            "Save Book"
+          )}
         </button>
       </div>
     </div>

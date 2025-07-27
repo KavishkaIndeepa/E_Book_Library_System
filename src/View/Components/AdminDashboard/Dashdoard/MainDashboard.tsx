@@ -9,20 +9,22 @@ import {
   FaCheck,
 } from "react-icons/fa";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 export default function MainDashboard() {
   const [showNotifications, setShowNotifications] = useState(false);
+  
 
   // Sample data (replace with real data via props or API)
-  const notifications: any[] = [];
+  const [notifications, setNotifications] = useState<any[]>([]);
   const [pendingBooks, setPendingBooks] = useState<any[]>([]);
   const [books, setBooks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState<any[]>([]);
 
   useEffect(() => {
-    fetchBooks();
     fetchUsers();
+    fetchBooks();
     fetchPendingBooks();
   }, []);
 
@@ -46,17 +48,30 @@ export default function MainDashboard() {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
+      if (users.length === 0) {
+        await fetchUsers();
+      }
       const res = await axios.get(
-        "http://192.168.1.188:5000/api/books/user/pending",
+        "http://192.168.1.188:5000/api/books/pending",
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
+
       const data = res.data as { books: any[] };
-      console.log("Pending books response", res.data);
       setPendingBooks(data.books || []);
+
+      const userMap = new Map(users.map((u: any) => [u.id, u.name]));
+      const generatedNotifications = (data.books || []).map((book) => {
+        const username = userMap.get(book.userId) || "Unknown";
+        return {
+          text: `${username} added "${book.title}"`,
+          time: timeAgo(book.createdAt),
+        };
+      });
+      setNotifications(generatedNotifications);
     } catch (err) {
       console.error("Failed to fetch pending books", err);
     } finally {
@@ -85,9 +100,19 @@ export default function MainDashboard() {
 
   // Approve book
   const handleApprove = async (id: string) => {
+  const result = await Swal.fire({
+    title: "Approve Book?",
+    text: "This book will be added to the library.",
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonText: "Yes, approve it!",
+    cancelButtonText: "Cancel",
+  });
+
+  if (result.isConfirmed) {
     try {
       await axios.patch(
-        `http://192.168.1.188:5000/api/books/added/${id}`,
+        `http://192.168.1.188:5000/api/books/approve/${id}`,
         null,
         {
           headers: {
@@ -95,14 +120,29 @@ export default function MainDashboard() {
           },
         }
       );
-      fetchBooks(); // refresh
+      await fetchBooks();
+      await fetchPendingBooks();
+      Swal.fire("Approved!", "The book has been approved.", "success");
     } catch (err) {
       console.error("Failed to approve book", err);
+      Swal.fire("Error", "Failed to approve the book", "error");
     }
-  };
+  }
+};
+
 
   // Reject book
-  const handleReject = async (id: string) => {
+const handleReject = async (id: string) => {
+  const result = await Swal.fire({
+    title: "Reject Book?",
+    text: "This action cannot be undone.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, reject it!",
+    cancelButtonText: "Cancel",
+  });
+
+  if (result.isConfirmed) {
     try {
       await axios.patch(
         `http://192.168.1.188:5000/api/books/reject/${id}`,
@@ -113,11 +153,29 @@ export default function MainDashboard() {
           },
         }
       );
-      fetchBooks(); // refresh
+      await fetchBooks();
+      await fetchPendingBooks();
+      Swal.fire("Rejected!", "The book has been rejected.", "success");
     } catch (err) {
       console.error("Failed to reject book", err);
+      Swal.fire("Error", "Failed to reject the book", "error");
     }
-  };
+  }
+};
+
+
+  function timeAgo(dateString: string): string {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diff = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+    if (diff < 60) return "just now";
+    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+    if (diff < 604800) return `${Math.floor(diff / 86400)}d ago`;
+
+    return date.toLocaleDateString();
+  }
 
   return (
     <div className="p-6 font-['Quicksand']">
@@ -141,9 +199,10 @@ export default function MainDashboard() {
               <p className="text-sm text-gray-500">No notifications yet</p>
             ) : (
               notifications.map((n, i) => (
-                <p key={i} className="text-sm text-gray-600 mb-1">
-                  {n}
-                </p>
+                <div key={i} className="text-sm text-gray-600 mb-2">
+                  <p>{n.text}</p>
+                  <span className="text-xs text-gray-400">{n.time}</span>
+                </div>
               ))
             )}
           </div>
@@ -194,87 +253,93 @@ export default function MainDashboard() {
           </div>
 
           {/* Pending Books Table */}
-          <div className="bg-white rounded-xl shadow p-6 overflow-x-auto">
+          <div className="bg-white rounded-xl shadow p-6">
             <h3 className="text-xl font-bold text-gray-700 mb-4">
               Pending Book Approvals
             </h3>
             {pendingBooks.length === 0 ? (
               <p className="text-gray-500">No pending books available.</p>
             ) : (
-              <table className="w-full min-w-[800px]">
-                <thead>
-                  <tr className="bg-gray-100 text-left">
-                    <th className="p-3 text-sm font-semibold text-gray-600">
-                      Member Name
-                    </th>
-                    <th className="p-3 text-sm font-semibold text-gray-600">
-                      Book Name
-                    </th>
-                    <th className="p-3 text-sm font-semibold text-gray-600">
-                      Cover
-                    </th>
-                    <th className="p-3 text-sm font-semibold text-gray-600">
-                      PDF
-                    </th>
-                    <th className="p-3 text-sm font-semibold text-gray-600">
-                      Price
-                    </th>
-                    <th className="p-3 text-sm font-semibold text-gray-600">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {pendingBooks.map((book, index) => (
-                    <tr key={index} className="border-t">
-                      <td className="p-3 text-sm">
-                        {book.userId
-                          ? users.find((user) => user._id === book.userId)
-                              ?.name || "Unknown"
-                          : "Admin"}
-                      </td>
-                      <td className="p-3 text-sm">{book.title}</td>
-                      <td className="p-3 text-sm">
-                        {book.image ? (
-                          <img
-                            src={
-                              book.image.startsWith("data:image")
-                                ? book.image
-                                : `data:image/jpeg;base64,${book.image}`
-                            }
-                            alt="Book Cover"
-                            className="h-14 w-10 object-cover rounded"
-                          />
-                        ) : (
-                          <span className="text-xs text-gray-400 italic">
-                            No Image
-                          </span>
-                        )}
-                      </td>
-                      <td className="p-3 text-sm">
-                        <a href={book.pdf} download>
-                          <FaDownload className="text-green-600 text-lg hover:text-green-800" />
-                        </a>
-                      </td>
-                      <td className="p-3 text-sm">{book.price}</td>
-                      <td className="p-3 text-sm flex gap-2">
-                        <button
-                          className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded flex items-center gap-1 text-sm"
-                          onClick={() => handleApprove(book._id)}
-                        >
-                          <FaCheck /> Accept
-                        </button>
-                        <button
-                          className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded flex items-center gap-1 text-sm"
-                          onClick={() => handleReject(book._id)}
-                        >
-                          <FaTimes /> Decline
-                        </button>
-                      </td>
+              <div className="overflow-x-auto rounded-md border border-gray-200">
+                <div className="min-w-[600px]">
+                  <table className="w-full ">
+                  <thead>
+                    <tr className="bg-gray-100 text-left">
+                      <th className="p-3 text-sm font-semibold text-gray-600">
+                        Member Name
+                      </th>
+                      <th className="p-3 text-sm font-semibold text-gray-600">
+                        Book Name
+                      </th>
+                      <th className="p-3 text-sm font-semibold text-gray-600">
+                        Cover
+                      </th>
+                      <th className="p-3 text-sm font-semibold text-gray-600">
+                        PDF
+                      </th>
+                      <th className="p-3 text-sm font-semibold text-gray-600">
+                        Price
+                      </th>
+                      <th className="p-3 text-sm font-semibold text-gray-600">
+                        Actions
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {pendingBooks.map((book, index) => (
+                      <tr key={index} className="border-t">
+                        <td className="p-3 text-sm">
+                          {book.userId
+                            ? users.find((user) => user._id === book.userId)
+                                ?.name || "Unknown"
+                            : "Admin"}
+                        </td>
+                        <td className="p-3 text-sm">{book.title}</td>
+                        <td className="p-3 text-sm">
+                          {book.image ? (
+                            <img
+                              src={
+                                book.image.startsWith("data:image")
+                                  ? book.image
+                                  : `data:image/jpeg;base64,${book.image}`
+                              }
+                              alt="Book Cover"
+                              className="h-14 w-10 object-cover rounded"
+                            />
+                          ) : (
+                            <span className="text-xs text-gray-400 italic">
+                              No Image
+                            </span>
+                          )}
+                        </td>
+                        <td className="p-3 text-sm">
+                          <a href={book.pdf} download>
+                            <FaDownload className="text-green-600 text-lg hover:text-green-800" />
+                          </a>
+                        </td>
+                        <td className="p-3 text-sm">$ {book.price}</td>
+                        <td className="p-3 text-sm flex gap-3">
+                          <button
+                            className="text-green-600 hover:text-green-800 text-lg"
+                            title="Accept"
+                            onClick={() => handleApprove(book._id)}
+                          >
+                            <FaCheck />
+                          </button>
+                          <button
+                            className="text-red-500 hover:text-red-700 text-lg"
+                            title="Decline"
+                            onClick={() => handleReject(book._id)}
+                          >
+                            <FaTimes />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                </div>
+              </div>
             )}
           </div>
         </>
