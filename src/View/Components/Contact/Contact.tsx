@@ -12,7 +12,7 @@ import {
   faLinkedinIn,
 } from "@fortawesome/free-brands-svg-icons";
 import { motion } from "framer-motion";
-import Hero from "../../../Assets/Images/Library/library.jpg";
+import contactImage from "../../../Assets/Images/Contact/contact.png";
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
@@ -34,11 +34,13 @@ export default function ContactForm() {
   };
 
   return (
-    <div className="mt-28 md:mt-24 mb-10 font-sans bg-white text-black">
-      {/* Hero Section */}
+    <div className="mt-28 mb-10 font-sans bg-white text-black">
+      {/* Hero Section - Unchanged */}
       <div
         className="relative h-[320px] md:h-[420px] flex items-center justify-center bg-cover bg-center"
-        style={{ backgroundImage: `url(${Hero})` }}
+        style={{
+          backgroundImage: `url(https://i.pinimg.com/1200x/96/9a/4e/969a4e19dc632d9e7dbbaa2f7b301673.jpg)`,
+        }}
       >
         <div className="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
         <motion.div
@@ -54,43 +56,37 @@ export default function ContactForm() {
             Contact Our Library Support Team
           </h2>
           <p className="text-md md:text-lg font-light">
-            Got a question or suggestion? Drop us a message and we’ll get back to you soon.
+            Got a question or suggestion? Drop us a message and we’ll get back
+            to you soon.
           </p>
         </motion.div>
       </div>
 
-      {/* Main Section */}
-      <div className="max-w-7xl mx-auto py-16 px-6 md:flex md:gap-12">
-        {/* Form */}
-        <motion.form
-          onSubmit={handleSubmit}
-          className="flex-1 h-full bg-white/80 shadow-xl backdrop-blur-xl rounded-3xl p-8 md:p-10 space-y-6 border border-[#e0e0e0]"
-          initial={{ opacity: 0, x: -30 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          <h3 className="text-2xl font-bold text-[#954c2e] mb-6">
-            Send Us a Message
-          </h3>
-
+      {/* Main Contact Section */}
+      <div className="max-w-6xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-2 gap-20 items-start bg-[#fefdfc] rounded-2xl shadow-sm mt-10">
+        {/* Contact Form */}
+        <form onSubmit={handleSubmit} className="space-y-6 w-full shadow-lg px-4 py-4 bg-white rounded-lg">
+          <h3 className="text-2xl font-semibold mb-4">Send Us a Message</h3>
           {["name", "email", "subject"].map((field) => (
             <div key={field}>
-              <label className="block text-sm font-medium mb-1 capitalize">{field}</label>
+              <label className="block text-sm font-medium mb-1 capitalize">
+                {field}
+              </label>
               <input
                 type={field === "email" ? "email" : "text"}
                 name={field}
                 value={formData[field as keyof typeof formData]}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#954c2e] bg-white transition"
-                placeholder={`Enter your ${field}`}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7a5c45] bg-[#faf8f7] transition"
               />
             </div>
           ))}
 
           <div>
-            <label className="block text-sm font-medium mb-1">Your Message</label>
+            <label className="block text-sm font-medium mb-1">
+              Your Message
+            </label>
             <textarea
               name="message"
               rows={5}
@@ -98,70 +94,78 @@ export default function ContactForm() {
               value={formData.message}
               onChange={handleChange}
               placeholder="Type your message here..."
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#954c2e] bg-white transition"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7a5c45] bg-[#faf8f7] transition"
             />
           </div>
 
-          <motion.button
+          <button
             type="submit"
-            whileHover={{ scale: 1.04 }}
-            whileTap={{ scale: 0.96 }}
-            className="w-full bg-[#954c2e] hover:bg-[#421f11] text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300"
+            className="bg-[#7a5c45] hover:bg-[#5c4332] text-white font-medium py-3 px-6 rounded-lg transition-all duration-300"
           >
-            SEND MESSAGE
-          </motion.button>
-        </motion.form>
+            Send Message
+          </button>
+        </form>
 
         {/* Contact Info */}
-        <motion.div
-          className="flex-1 h-full px-4 space-y-10"
-          initial={{ opacity: 0, x: 30 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+        <div
+          className="relative flex flex-col justify-center gap-10 bg-no-repeat bg-right-bottom bg-contain mt-5 "
+          // style={{
+          //   backgroundImage: `url(${contactImage})`,
+          //   backgroundPosition: "right bottom",
+          //   backgroundSize: "contain",
+          //   backgroundRepeat: "no-repeat",
+          //   padding: "2rem",
+          // }}
         >
           <div>
-            <h3 className="text-[#954c2e] font-semibold">Contact Us</h3>
-            <h2 className="text-3xl font-bold mt-1 mb-3">Get In Touch</h2>
+            <h3 className="text-2xl font-semibold mb-2">Get In Touch</h3>
             <p className="text-gray-600">
-              Our team is always here to help. Whether it's support or feedback, we'd love to hear from you.
+              Our team is always here to help. Whether it's a support request or
+              feedback, we’d love to hear you.
             </p>
           </div>
 
-          <div className="space-y-5">
+          <div className="space-y-4 text-gray-700">
             {[
-              { icon: faPhone, title: "Call Us", value: "+123-236-7124" },
-              { icon: faEnvelope, title: "Email Us", value: "help@awesomeSite.com" },
-              { icon: faGlobe, title: "Website", value: "www.awesomeSite.com" },
-            ].map((item, i) => (
-              <div key={i} className="flex items-start gap-4">
-                <FontAwesomeIcon icon={item.icon} className="text-[#954c2e] text-xl mt-1" />
+              { icon: faPhone, title: "Call Us", value: "+128 2367 1246" },
+              {
+                icon: faEnvelope,
+                title: "Email Us",
+                value: "help@awesomesite.com",
+              },
+              { icon: faGlobe, title: "Website", value: "www.awesomesite.com" },
+            ].map((item, index) => (
+              <div key={index} className="flex items-start gap-4">
+                <FontAwesomeIcon
+                  icon={item.icon}
+                  className="text-[#7a5c45] text-xl mt-1"
+                />
                 <div>
                   <p className="font-semibold">{item.title}</p>
-                  <p className="text-gray-700">{item.value}</p>
+                  <p>{item.value}</p>
                 </div>
               </div>
             ))}
           </div>
 
           <div>
-            <p className="font-semibold mb-3">Follow Us On</p>
-            <div className="flex gap-5 text-2xl">
-              <a href="#" className="text-[#3352ff] hover:text-[#1e3cb8] transition">
+            <p className="font-semibold mb-3">Follow Us</p>
+            <div className="flex gap-5 text-2xl text-gray-600">
+              <a href="#" className="hover:text-[#3b5998] transition">
                 <FontAwesomeIcon icon={faFacebookF} />
               </a>
-              <a href="#" className="text-[#1da1f2] hover:text-[#0a85d1] transition">
+              <a href="#" className="hover:text-[#1da1f2] transition">
                 <FontAwesomeIcon icon={faTwitter} />
               </a>
-              <a href="#" className="text-[#e1306c] hover:text-[#b22153] transition">
+              <a href="#" className="hover:text-[#e1306c] transition">
                 <FontAwesomeIcon icon={faInstagram} />
               </a>
-              <a href="#" className="text-[#0077b5] hover:text-[#005c90] transition">
+              <a href="#" className="hover:text-[#0077b5] transition">
                 <FontAwesomeIcon icon={faLinkedinIn} />
               </a>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   );

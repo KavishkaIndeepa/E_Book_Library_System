@@ -128,15 +128,15 @@ export default function Home() {
             </button>
           </div>
           <motion.div
-            className="w-full md:w-1/2 flex justify-center items-center"
+            className="w-full md:w-1/2 flex justify-end items-center"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.8 }}
           >
             <img
-              src={hero}
+              src={'https://i.pinimg.com/736x/8d/e4/bf/8de4bf13fdc73361b7b93b4519b52ea7.jpg'}
               alt="Bookshelf"
-              className="w-full h-auto max-h-[500px] object-cover rounded-lg shadow-lg"
+              className="w-full h-auto max-h-[500px] object-cover rounded-lg shadow-lg transition-transform duration-500 ease-in-out hover:scale-105"
             />
           </motion.div>
         </div>
@@ -154,9 +154,9 @@ export default function Home() {
           <div className="flex flex-col md:flex-row items-center gap-10">
             <div className="w-full md:w-1/2" data-aos="fade-up">
               <img
-                src={hero}
+                src={'https://i.pinimg.com/736x/d8/b4/95/d8b4955e1ff5cac6769c8a6f2dc4a096.jpg'}
                 alt="Reading"
-                className="rounded-xl w-full shadow-lg"
+                className="rounded-xl w-full max-h-[400px] shadow-lg transition-transform duration-500 ease-in-out hover:scale-105"
               />
             </div>
             <div
@@ -197,9 +197,9 @@ export default function Home() {
           <div className="flex flex-col md:flex-row items-center gap-10">
             <div className="w-full md:w-1/2" data-aos="fade-up">
               <img
-                src={hero}
+                src={'https://i.pinimg.com/736x/24/3b/f1/243bf115171417174b0a9f1bf6ca653f.jpg'}
                 alt="Book cover"
-                className="rounded-xl w-full shadow-lg"
+                className="rounded-xl w-full max-h-[500px] shadow-lg transition-transform duration-500 ease-in-out hover:scale-105"
               />
             </div>
             <div className="w-full md:w-1/2 space-y-4" data-aos="zoom-in">

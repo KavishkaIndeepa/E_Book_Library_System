@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-import BookIllustration from "../../../Assets/Images/Login/Login.jpg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
@@ -127,7 +126,7 @@ export default function SignUp() {
     <div
       className="min-h-screen bg-cover bg-center flex items-center justify-center relative px-4"
       style={{
-        backgroundImage: `url(${BookIllustration})`,
+        backgroundImage: `url(https://i.pinimg.com/1200x/8e/07/85/8e0785bf31ab704fad6aaaa2703241e9.jpg)`,
       }}
     >
       {/* Dark overlay */}

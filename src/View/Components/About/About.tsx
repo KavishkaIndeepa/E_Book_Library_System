@@ -1,6 +1,4 @@
 import React, { useEffect } from "react";
-import Main from "../../../Assets/Images/About/main.jpg";
-import Sub from "../../../Assets/Images/About/sub.jpg";
 import "./About.css";
 import { motion } from "framer-motion";
 import "aos/dist/aos.css";
@@ -28,7 +26,7 @@ export default function About() {
           transition={{ duration: 0.8 }}
         >
           <img
-            src={Main}
+            src={'https://i.pinimg.com/736x/a2/43/ee/a243eea8da93399890aa0cdb551953b2.jpg'}
             alt="Bookshelf"
             className="w-full h-auto max-h-[500px] object-cover rounded-lg shadow-lg"
           />
@@ -64,7 +62,7 @@ export default function About() {
         <div
           className="relative w-full h-[300px] md:h-[300px] rounded-lg overflow-hidden mt-12 flex items-center justify-center"
           style={{
-            backgroundImage: `url(${Sub})`,
+            backgroundImage: `url(https://i.pinimg.com/1200x/f2/46/93/f2469302c04f043f1e371fe33c5e1927.jpg)`,
             backgroundSize: "cover",
             backgroundPosition: "center",
             borderRadius: "1rem",
@@ -103,7 +101,7 @@ export default function About() {
           library.
         </p>
 
-        <div className="relative overflow-hidden">
+        <div className="relative overflow-hidden" data-aos="fade-up">
           <div
             className="flex gap-6 w-max animate-scroll no-scrollbar"
             style={{

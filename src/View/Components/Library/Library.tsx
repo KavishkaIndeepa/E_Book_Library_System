@@ -187,7 +187,7 @@ export default function Library() {
       <div
         className="relative w-full h-[300px] md:h-[400px] overflow-hidden mt-12 flex items-center justify-center"
         style={{
-          backgroundImage: `url(${Hero})`,
+          backgroundImage: `url(https://i.pinimg.com/736x/cc/62/17/cc6217039ebd56b6a2781d67ff1c449c.jpg)`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}

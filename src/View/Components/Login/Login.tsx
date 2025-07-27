@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import BookIllustration from "../../../Assets/Images/Login/Login.jpg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faEye,
@@ -97,7 +96,7 @@ export default function Login() {
     <div
       className="min-h-screen bg-cover bg-center flex items-center justify-center relative px-4"
       style={{
-        backgroundImage: `url(${BookIllustration})`,
+        backgroundImage: `url(https://i.pinimg.com/1200x/fa/dc/64/fadc64656fe09c15358f7ff5ebc74a17.jpg)`,
       }}
     >
       {/* Overlay */}
@@ -172,9 +171,16 @@ export default function Login() {
             )}
           </div>
 
-          <div className="text-right">
+          <div className="flex items-center justify-between">
+            <label className="inline-flex items-center text-sm text-white">
+              <input
+                type="checkbox"
+                className="form-checkbox mr-2 accent-orange-500"
+              />
+              Remember Me
+            </label>
             <Link
-              to="/forgot-password"
+              to=""
               className="text-sm text-white hover:underline"
             >
               Forgot Password?
@@ -212,6 +218,28 @@ export default function Login() {
             )}
           </button>
         </form>
+
+        {/* Divider */}
+        <div className="flex items-center my-6">
+          <div className="flex-grow border-t border-white/40" />
+          <span className="mx-3 text-white/70 text-sm">OR</span>
+          <div className="flex-grow border-t border-white/40" />
+        </div>
+
+        {/* Google Login Button */}
+        <button
+          onClick={() => {
+            // call your Google login logic here
+          }}
+          className="w-full bg-white text-gray-800 hover:bg-gray-100 transition py-2 rounded-xl font-semibold shadow flex items-center justify-center gap-2"
+        >
+          <img
+            src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+            alt="Google"
+            className="h-5 w-5"
+          />
+          Login with Google
+        </button>
 
         <p className="text-sm text-center mt-6 text-white/80">
           Don’t have an account?{" "}
