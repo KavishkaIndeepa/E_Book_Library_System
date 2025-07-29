@@ -58,7 +58,9 @@ export default function AdminDashboard() {
         </div>
 
         {/* Profile */}
-        <div className="flex items-center gap-3 px-4 py-6 border-b border-gray-700">
+        <button className="flex items-center gap-3 px-4 py-6 border-b border-gray-700"
+         onClick={() => navigate("/")}
+        >
           <img
             src={
               user?.profileImage
@@ -78,7 +80,7 @@ export default function AdminDashboard() {
               <p className="text-sm font-semibold">{user?.name || "Guest"}</p>
             </div>
           )}
-        </div>
+        </button>
 
         {/* Navigation */}
         <nav className="mt-4 flex-1 px-2 space-y-2">

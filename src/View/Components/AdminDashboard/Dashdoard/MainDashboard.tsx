@@ -33,9 +33,9 @@ export default function MainDashboard() {
     setLoading(true);
     try {
       const res = await axios.get(
-        "http://192.168.1.188:5000/api/books/all?status=added"
+        "http://192.168.1.188:5000/api/books/all"
       );
-      const data = res.data as { books: any[]; total: number };
+      const data = res.data as { books: any[];};
       setBooks(data.books || []);
     } catch (err) {
       console.error("Failed to fetch books", err);
