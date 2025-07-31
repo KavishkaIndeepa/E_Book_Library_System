@@ -75,7 +75,7 @@ export default function AdminBooks() {
   const totalPages = Math.ceil(totalBooks / booksPerPage);
 
   return (
-    <div className="p-6 font-['Quicksand'] w-full">
+    <div className="p-6 w-full">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-gray-700">Books Management</h2>

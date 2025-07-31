@@ -121,7 +121,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="p-6 bg-gradient-to-br from-gray-50 to-gray-200 min-h-screen font-['poppins'] relative">
+    <div className="p-6 bg-gradient-to-br from-gray-50 to-gray-200 min-h-screen relative">
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
         <div>

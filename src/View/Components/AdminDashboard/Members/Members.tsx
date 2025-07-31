@@ -71,7 +71,7 @@ export default function Members() {
   const totalPages = Math.ceil(members.length / membersPerPage);
 
   return (
-    <div className="p-6 font-['Quicksand'] w-full">
+    <div className="p-6 w-full">
       {/* Top Header */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-gray-700">Members Management</h2>

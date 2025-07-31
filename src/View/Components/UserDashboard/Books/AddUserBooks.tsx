@@ -2,9 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
-import {
-  faArrowLeft
-} from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function AddUserBooks() {
@@ -80,11 +78,11 @@ export default function AddUserBooks() {
       };
       if (book) {
         setForm({
-          title: book.title,
-          price: book.price,
-          category: book.category,
-          story: book.story,
-          description: book.description,
+          title: book.title || "",
+          price: book.price || "",
+          category: book.category || "",
+          story: book.story || "",
+          description: book.description || "",
           meta: {
             sku: book.meta?.sku || "",
             tags: book.meta?.tags || "",
@@ -96,8 +94,9 @@ export default function AddUserBooks() {
             availability: book.meta?.availability || "",
           },
           status: book.status || "pending",
-          author: book.author,
+          author: book.author || "",
         });
+
         setBookImage(book.image || null);
         setBookPdf(book.pdf || null);
       }
@@ -137,6 +136,15 @@ export default function AddUserBooks() {
 
   const handleSubmit = async () => {
     setLoading(true);
+    if (!form.title || !form.category || !form.author || !bookImage || !bookPdf || !form.story || !form.description || !form.price) {
+      Swal.fire(
+        "Validation Error",
+        "Title, Category, and Author,CoverImage, PDF, Story, Description, Price are required.",
+        "warning"
+      );
+      setLoading(false);
+      return;
+    }
     const payload = {
       title: form.title,
       price: form.price,
@@ -183,7 +191,7 @@ export default function AddUserBooks() {
   };
 
   return (
-    <div className="p-6 font-['poppins'] w-full">
+    <div className="p-6 w-full">
       <div className="flex items-center gap-4 mb-6">
         <button
           onClick={() => navigate(-1)}
@@ -202,7 +210,7 @@ export default function AddUserBooks() {
           <label className="block mb-1 text-sm font-semibold">Title</label>
           <input
             name="title"
-            value={form.title}
+            value={form.title ?? ""}
             onChange={handleChange}
             type="text"
             placeholder="Enter Book Title"
@@ -213,9 +221,9 @@ export default function AddUserBooks() {
           <label className="block mb-1 text-sm font-semibold">Price</label>
           <input
             name="price"
-            value={form.price}
+            value={form.price ?? ""}
             onChange={handleChange}
-            type="text"
+            type="number"
             placeholder="0 for Free or Enter Price (e.g., 100)"
             className="border p-3 rounded-lg shadow w-full"
           />
@@ -229,7 +237,7 @@ export default function AddUserBooks() {
           <input
             list="category-options"
             name="category"
-            value={form.category}
+            value={form.category ?? ""}
             onChange={handleChange}
             placeholder="Select or type category"
             className="border p-3 rounded-lg shadow w-full"
@@ -244,7 +252,7 @@ export default function AddUserBooks() {
           <label className="block mb-1 text-sm font-semibold">Author</label>
           <input
             name="author"
-            value={form.author}
+            value={form.author ?? ""}
             onChange={handleChange}
             type="text"
             placeholder="Enter Author Name"
@@ -289,7 +297,7 @@ export default function AddUserBooks() {
           </label>
           <textarea
             name="story"
-            value={form.story}
+            value={form.story ?? ""}
             onChange={handleChange}
             placeholder="Enter a brief story about the book"
             className="border p-3 rounded-lg shadow w-full"
@@ -301,7 +309,7 @@ export default function AddUserBooks() {
           </label>
           <textarea
             name="description"
-            value={form.description}
+            value={form.description ?? ""}
             onChange={handleChange}
             placeholder="Enter a detailed description about the book"
             className="border p-3 rounded-lg shadow w-full"
@@ -321,7 +329,7 @@ export default function AddUserBooks() {
             </label>
             <input
               name={key}
-              value={value}
+              value={value ?? ""}
               onChange={handleChange}
               placeholder={`Enter ${key}`}
               className="border p-3 rounded-lg shadow w-full"

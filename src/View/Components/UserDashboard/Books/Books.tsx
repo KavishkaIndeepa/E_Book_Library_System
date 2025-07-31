@@ -69,7 +69,7 @@ const handleDelete = async (bookId: string) => {
   const totalPages = Math.ceil(books.length / booksPerPage);
 
   return (
-    <div className="p-6 font-['poppins'] w-full">
+    <div className="p-6 w-full">
       {/* Top Header */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-gray-700">Books Management</h2>

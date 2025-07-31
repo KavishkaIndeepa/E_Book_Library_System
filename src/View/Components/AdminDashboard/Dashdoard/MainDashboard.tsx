@@ -32,11 +32,11 @@ export default function MainDashboard() {
   const fetchBooks = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(
+      const res = await axios.get<any[]>(
         "http://192.168.1.188:5000/api/books/all"
       );
-      const data = res.data as { books: any[];};
-      setBooks(data.books || []);
+      const data = res.data;
+      setBooks(data || []); // assuming data is array directly
     } catch (err) {
       console.error("Failed to fetch books", err);
     } finally {
@@ -48,10 +48,12 @@ export default function MainDashboard() {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
+
       if (users.length === 0) {
         await fetchUsers();
       }
-      const res = await axios.get(
+
+      const res = await axios.get<any>(
         "http://192.168.1.188:5000/api/books/pending",
         {
           headers: {
@@ -60,17 +62,20 @@ export default function MainDashboard() {
         }
       );
 
-      const data = res.data as { books: any[] };
-      setPendingBooks(data.books || []);
+      const pending = res.data.books || [];
+      setPendingBooks(pending);
 
-      const userMap = new Map(users.map((u: any) => [u.id, u.name]));
-      const generatedNotifications = (data.books || []).map((book) => {
-        const username = userMap.get(book.userId) || "Unknown";
+      const userMap = new Map(users.map((u: any) => [u._id, u.name]));
+
+      const generatedNotifications = pending.map((book: any) => {
+        const username = userMap.get(book.userId);
         return {
-          text: `${username} added "${book.title}"`,
-          time: timeAgo(book.createdAt),
+          text: `"${book.title}" by ${book.author} was added by ${username}`,
+          status: book.status,
+          time: book.createdAt || new Date().toISOString(),
         };
       });
+
       setNotifications(generatedNotifications);
     } catch (err) {
       console.error("Failed to fetch pending books", err);
@@ -176,7 +181,7 @@ export default function MainDashboard() {
   }
 
   return (
-    <div className="p-6 font-['poppins']">
+    <div className="p-6">
       {/* Header with Notification */}
       <div className="flex justify-end mb-6 relative">
         <div
@@ -201,8 +206,11 @@ export default function MainDashboard() {
             ) : (
               notifications.map((n, i) => (
                 <div key={i} className="text-sm text-gray-600 mb-2">
-                  <p>{n.text}</p>
-                  <span className="text-xs text-gray-400">{n.time}</span>
+                  <p className="font-medium">{n.text}</p>
+                  <div className="flex justify-between text-xs text-gray-400 mt-1">
+                    <span>Status: {n.status}</span>
+                    <span>{timeAgo(n.time)}</span>
+                  </div>
                 </div>
               ))
             )}

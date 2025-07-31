@@ -38,7 +38,7 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div className="flex min-h-screen bg-gray-100 font-['poppins']">
+    <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
       <div
         className={`transition-all duration-300 bg-[#0f0e47] text-white ${
