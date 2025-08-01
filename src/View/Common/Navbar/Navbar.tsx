@@ -55,7 +55,7 @@ export default function Navbar() {
       {/* Desktop Navbar */}
       <div className="hidden md:flex justify-between items-center px-6 py-4 shadow-md shadow-[#f1a485]">
         <div className="flex items-center space-x-4">
-          <img src={Logo} alt="Logo" className="h-16" />
+          <img src={Logo} alt="Logo" className="h-20" />
         </div>
         <ul className="flex space-x-6 text-lg font-poppins">
           <li
