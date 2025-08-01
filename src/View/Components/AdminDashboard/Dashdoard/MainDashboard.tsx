@@ -54,7 +54,7 @@ export default function MainDashboard() {
       }
 
       const res = await axios.get<any>(
-        "https://ebooklibrarysystembackend-production.up.railway.app/books/pending",
+        "https://ebooklibrarysystembackend-production.up.railway.app/api/books/pending",
         {
           headers: {
             Authorization: `Bearer ${token}`,
