@@ -40,7 +40,7 @@ export default function Cart() {
   const fetchCart = async () => {
     setLoading(true);
     try {
-      const res = await axios.get<any>("http://192.168.1.188:5000/api/cart", {
+      const res = await axios.get<any>("https://ebooklibrarysystembackend-production.up.railway.app/api/cart", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setCart(res.data.items);
@@ -54,7 +54,7 @@ export default function Cart() {
   const fetchCards = async () => {
     try {
       const res = await axios.get<any[]>(
-        "http://192.168.1.188:5000/api/payment",
+        "https://ebooklibrarysystembackend-production.up.railway.app/api/payment",
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -68,7 +68,7 @@ export default function Cart() {
   const removeItem = async (bookId: string) => {
     try {
       await axios.delete(
-        `http://192.168.1.188:5000/api/cart/remove/${bookId}`,
+        `https://ebooklibrarysystembackend-production.up.railway.app/api/cart/remove/${bookId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -126,7 +126,7 @@ export default function Cart() {
       }, 0);
 
       await axios.post(
-        "http://192.168.1.188:5000/api/orders",
+        "https://ebooklibrarysystembackend-production.up.railway.app/api/orders",
         {
           userId,
           books: bookIds,
@@ -151,7 +151,7 @@ export default function Cart() {
       // Remove purchased books from cart
       for (const item of selectedBooks) {
         await axios.delete(
-          `http://192.168.1.188:5000/api/cart/remove/${item.bookId._id}`,
+          `https://ebooklibrarysystembackend-production.up.railway.app/api/cart/remove/${item.bookId._id}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
       }

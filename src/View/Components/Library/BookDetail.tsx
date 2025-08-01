@@ -42,7 +42,7 @@ export default function BookDetail() {
 
   const fetchBook = async () => {
     try {
-      const res = await axios.get(`http://192.168.1.188:5000/api/books/${id}`);
+      const res = await axios.get(`https://ebooklibrarysystembackend-production.up.railway.app/api/books/${id}`);
       setBook(res.data);
     } catch (err) {
       console.error(err);
@@ -76,7 +76,7 @@ export default function BookDetail() {
 
     try {
       await axios.post(
-        "http://192.168.1.188:5000/api/cart/add",
+        "https://ebooklibrarysystembackend-production.up.railway.app/api/cart/add",
         {
           bookId: book._id,
           quantity,
@@ -111,7 +111,7 @@ export default function BookDetail() {
     if (!token || !id) return;
 
     try {
-      const res = await axios.get("http://192.168.1.188:5000/api/wishlist", {
+      const res = await axios.get("https://ebooklibrarysystembackend-production.up.railway.app/api/wishlist", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -141,7 +141,7 @@ export default function BookDetail() {
     try {
       if (!isFav) {
         await axios.post(
-          "http://192.168.1.188:5000/api/wishlist/add",
+          "https://ebooklibrarysystembackend-production.up.railway.app/api/wishlist/add",
           { bookId: id },
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -149,7 +149,7 @@ export default function BookDetail() {
         Swal.fire("Added", "Book added to your wishlist!", "success");
       } else {
         await axios.delete(
-          `http://192.168.1.188:5000/api/wishlist/remove/${id}`,
+          `https://ebooklibrarysystembackend-production.up.railway.app/api/wishlist/remove/${id}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setIsFav(false);

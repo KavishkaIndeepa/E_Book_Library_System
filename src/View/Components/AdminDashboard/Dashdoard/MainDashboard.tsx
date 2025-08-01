@@ -33,7 +33,7 @@ export default function MainDashboard() {
     setLoading(true);
     try {
       const res = await axios.get<any[]>(
-        "http://192.168.1.188:5000/api/books/all"
+        "https://ebooklibrarysystembackend-production.up.railway.app/api/books/all"
       );
       const data = res.data;
       setBooks(data || []); // assuming data is array directly
@@ -54,7 +54,7 @@ export default function MainDashboard() {
       }
 
       const res = await axios.get<any>(
-        "http://192.168.1.188:5000/api/books/pending",
+        "https://ebooklibrarysystembackend-production.up.railway.app/books/pending",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -87,7 +87,7 @@ export default function MainDashboard() {
   // Fetch Users (excluding admin)
   const fetchUsers = async () => {
     try {
-      const res = await axios.get("http://192.168.1.188:5000/api/users/", {
+      const res = await axios.get("https://ebooklibrarysystembackend-production.up.railway.app/api/users/", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -117,7 +117,7 @@ export default function MainDashboard() {
     if (result.isConfirmed) {
       try {
         await axios.patch(
-          `http://192.168.1.188:5000/api/books/approve/${id}`,
+          `https://ebooklibrarysystembackend-production.up.railway.app/api/books/approve/${id}`,
           null,
           {
             headers: {
@@ -149,7 +149,7 @@ export default function MainDashboard() {
     if (result.isConfirmed) {
       try {
         await axios.patch(
-          `http://192.168.1.188:5000/api/books/reject/${id}`,
+          `https://ebooklibrarysystembackend-production.up.railway.app/api/books/reject/${id}`,
           null,
           {
             headers: {

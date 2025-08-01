@@ -39,7 +39,7 @@ export default function AdminBooks() {
     setLoading(true);
     try {
       const res = await axios.get<BooksResponse>(
-        `http://192.168.1.188:5000/api/books?page=${page}&limit=${booksPerPage}`
+        `https://ebooklibrarysystembackend-production.up.railway.app/api/books?page=${page}&limit=${booksPerPage}`
       );
       setBooks(res.data.books);
       setTotalBooks(res.data.total);
@@ -63,7 +63,7 @@ export default function AdminBooks() {
 
     if (confirm.isConfirmed) {
       try {
-        await axios.delete(`http://192.168.1.188:5000/api/books/${id}`);
+        await axios.delete(`https://ebooklibrarysystembackend-production.up.railway.app/api/books/${id}`);
         Swal.fire("Deleted!", "Book has been removed.", "success");
         fetchBooks(currentPage);
       } catch (err) {

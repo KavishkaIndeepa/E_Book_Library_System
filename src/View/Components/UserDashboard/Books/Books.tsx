@@ -25,7 +25,7 @@ const fetchBooks = async () => {
   setLoading(true);
   try {
     const token = localStorage.getItem("token");
-    const res = await axios.get<any>("http://192.168.1.188:5000/api/books/user/pending", {
+    const res = await axios.get<any>("https://ebooklibrarysystembackend-production.up.railway.app/api/books/user/pending", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -52,7 +52,7 @@ const handleDelete = async (bookId: string) => {
 
  if (confirm.isConfirmed) {
   try {
-    await axios.delete(`http://192.168.1.188:5000/api/books/${bookId}`);
+    await axios.delete(`https://ebooklibrarysystembackend-production.up.railway.app/api/books/${bookId}`);
     Swal.fire("Deleted!", "Book has been removed.", "success");
   } catch (err) {
     console.error("Failed to delete book", err);

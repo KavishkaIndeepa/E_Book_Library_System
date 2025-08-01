@@ -56,7 +56,7 @@ export default function Dashboard() {
   const fetchWishlist = async () => {
     try {
       const res = await axios.get<WishlistItem[]>(
-        "http://192.168.1.188:5000/api/wishlist",
+        "https://ebooklibrarysystembackend-production.up.railway.app/api/wishlist",
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -69,7 +69,7 @@ export default function Dashboard() {
 
   const fetchCart = async () => {
     try {
-      const res = await axios.get<any>("http://192.168.1.188:5000/api/cart", {
+      const res = await axios.get<any>("https://ebooklibrarysystembackend-production.up.railway.app/api/cart", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setCart(res.data.items);
@@ -81,7 +81,7 @@ export default function Dashboard() {
   const fetchPendingBooks = async () => {
     try {
       const res = await axios.get<any>(
-        "http://192.168.1.188:5000/api/books/user/pending",
+        "https://ebooklibrarysystembackend-production.up.railway.app/api/books/user/pending",
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -95,7 +95,7 @@ export default function Dashboard() {
   const fetchCards = async () => {
     try {
       const res = await axios.get<any>(
-        "http://192.168.1.188:5000/api/payment",
+        "https://ebooklibrarysystembackend-production.up.railway.app/api/payment",
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -109,7 +109,7 @@ export default function Dashboard() {
   const fetchRecentOrders = async () => {
     try {
       const res = await axios.get<any []>(
-        "http://192.168.1.188:5000/api/orders/recent",
+        "https://ebooklibrarysystembackend-production.up.railway.app/api/orders/recent",
         {
           headers: { Authorization: `Bearer ${token}` },
         }

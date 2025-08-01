@@ -80,7 +80,7 @@ export default function SignUp() {
 
     try {
       const res = await axios.post(
-        "http://192.168.1.188:5000/api/auth/register",
+        "https://ebooklibrarysystembackend-production.up.railway.app/api/auth/register",
         {
           name: formData.name,
           email: formData.email,

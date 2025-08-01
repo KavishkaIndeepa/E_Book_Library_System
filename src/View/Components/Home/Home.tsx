@@ -53,7 +53,7 @@ export default function Home() {
     setLoading(true);
     try {
       const res = await axios.get<{ books: any[] }>(
-        "http://192.168.1.188:5000/api/books?page=1&limit=12"
+        "https://ebooklibrarysystembackend-production.up.railway.app/api/books?page=1&limit=12"
       );
       const { books: fetchedBooks } = res.data;
       const freeBooks = fetchedBooks.filter(

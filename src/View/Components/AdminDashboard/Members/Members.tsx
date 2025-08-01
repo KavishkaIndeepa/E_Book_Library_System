@@ -20,7 +20,7 @@ export default function Members() {
   const fetchUsers = async () => {
     setLoading(true); // optional, if you want to reload later
     try {
-      const res = await axios.get("http://192.168.1.188:5000/api/users/", {
+      const res = await axios.get("https://ebooklibrarysystembackend-production.up.railway.app/api/users/", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -52,7 +52,7 @@ export default function Members() {
 
     if (confirm.isConfirmed) {
       try {
-        await axios.delete(`http://192.168.1.188:5000/api/users/${id}`, {
+        await axios.delete(`https://ebooklibrarysystembackend-production.up.railway.app/api/users/${id}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },

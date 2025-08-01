@@ -33,7 +33,7 @@ export default function Favourites() {
   const fetchWishlist = async () => {
     try {
       const res = await axios.get<WishlistItem[]>(
-        "http://192.168.1.188:5000/api/wishlist",
+        "https://ebooklibrarysystembackend-production.up.railway.app/api/wishlist",
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -49,7 +49,7 @@ export default function Favourites() {
   const removeFromWishlist = async (bookId: string) => {
     try {
       await axios.delete(
-        `http://192.168.1.188:5000/api/wishlist/remove/${bookId}`,
+        `https://ebooklibrarysystembackend-production.up.railway.app/api/wishlist/remove/${bookId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setWishlist((prev) => prev.filter((item) => item.bookId._id !== bookId));
@@ -64,7 +64,7 @@ export default function Favourites() {
   const addToCart = async (bookId: string) => {
     try {
       await axios.post(
-        `http://192.168.1.188:5000/api/cart/add`,
+        `https://ebooklibrarysystembackend-production.up.railway.app/api/cart/add`,
         { bookId },
         { headers: { Authorization: `Bearer ${token}` } }
       );

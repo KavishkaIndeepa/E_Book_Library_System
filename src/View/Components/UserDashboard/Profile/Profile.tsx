@@ -31,7 +31,7 @@ export default function Profile() {
       setLoading(true);
       const token = localStorage.getItem("token");
       const res = await axios.get<UserData>(
-        "http://192.168.1.188:5000/api/users/me",
+        "https://ebooklibrarysystembackend-production.up.railway.app/api/users/me",
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -72,7 +72,7 @@ export default function Profile() {
       const token = localStorage.getItem("token");
       const updatedData = { ...formData };
 
-      await axios.put("http://192.168.1.188:5000/api/users/me", updatedData, {
+      await axios.put("https://ebooklibrarysystembackend-production.up.railway.app/api/users/me", updatedData, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

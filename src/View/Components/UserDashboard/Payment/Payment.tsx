@@ -36,7 +36,7 @@ export default function Payment() {
   const fetchCards = async () => {
     if (!token) return;
     try {
-      const res = await axios.get<CardType[]>("http://192.168.1.188:5000/api/payment", {
+      const res = await axios.get<CardType[]>("https://ebooklibrarysystembackend-production.up.railway.app/api/payment", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setCards(res.data);
@@ -53,12 +53,12 @@ export default function Payment() {
 
     try {
       if (selectedCardId) {
-        await axios.put(`http://192.168.1.188:5000/api/payment/${selectedCardId}`, data, {
+        await axios.put(`https://ebooklibrarysystembackend-production.up.railway.app/api/payment/${selectedCardId}`, data, {
           headers: { Authorization: `Bearer ${token}` },
         });
         Swal.fire("Updated", "Card updated successfully", "success");
       } else {
-        await axios.post("http://192.168.1.188:5000/api/payment", data, {
+        await axios.post("https://ebooklibrarysystembackend-production.up.railway.app/api/payment", data, {
           headers: { Authorization: `Bearer ${token}` },
         });
         Swal.fire("Saved", "Card saved successfully", "success");
@@ -83,7 +83,7 @@ export default function Payment() {
   const handleDeleteCard = async () => {
     if (!selectedCardId || !token) return;
     try {
-      await axios.delete(`http://192.168.1.188:5000/api/payment/${selectedCardId}`, {
+      await axios.delete(`https://ebooklibrarysystembackend-production.up.railway.app/api/payment/${selectedCardId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       Swal.fire("Deleted", "Card removed.", "success");

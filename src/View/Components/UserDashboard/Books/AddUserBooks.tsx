@@ -52,7 +52,7 @@ export default function AddUserBooks() {
   const fetchBookDetails = async (bookId: string) => {
     try {
       const res = await axios.get(
-        `http://192.168.1.188:5000/api/books/${bookId}`
+        `https://ebooklibrarysystembackend-production.up.railway.app/api/books/${bookId}`
       );
 
       const book = res.data as {
@@ -169,14 +169,14 @@ export default function AddUserBooks() {
 
       if (isEditMode && id) {
         await axios.put(
-          `http://192.168.1.188:5000/api/books/${id}`,
+          `https://ebooklibrarysystembackend-production.up.railway.app/api/books/${id}`,
           payload,
           config
         );
         Swal.fire("Updated!", "Book updated successfully.", "success");
       } else {
         await axios.post(
-          "http://192.168.1.188:5000/api/books/",
+          "https://ebooklibrarysystembackend-production.up.railway.app/api/books/",
           payload,
           config
         );

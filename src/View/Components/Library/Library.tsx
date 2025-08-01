@@ -31,7 +31,7 @@ export default function Library() {
     setLoading(true);
     try {
       const res = await axios.get<{ books: any[]; total: number }>(
-        `http://192.168.1.188:5000/api/books?page=${page}&limit=${booksPerPage}`
+        `https://ebooklibrarysystembackend-production.up.railway.app/api/books?page=${page}&limit=${booksPerPage}`
       );
       const { books, total } = res.data;
       setBooks(books);
@@ -95,7 +95,7 @@ export default function Library() {
     try {
       // Send request to backend to add item to cart
       await axios.post(
-        "http://192.168.1.188:5000/api/cart/add",
+        "https://ebooklibrarysystembackend-production.up.railway.app/api/cart/add",
         {
           bookId: book._id,
           quantity: 1,
@@ -134,7 +134,7 @@ export default function Library() {
     if (!token) return;
 
     try {
-      const res = await axios.get("http://192.168.1.188:5000/api/wishlist", {
+      const res = await axios.get("https://ebooklibrarysystembackend-production.up.railway.app/api/wishlist", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const wishlist = res.data as any[];
@@ -161,7 +161,7 @@ export default function Library() {
     try {
       if (!isAlreadyFav) {
         await axios.post(
-          "http://192.168.1.188:5000/api/wishlist/add",
+          "https://ebooklibrarysystembackend-production.up.railway.app/api/wishlist/add",
           { bookId },
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -169,7 +169,7 @@ export default function Library() {
         Swal.fire("Added", "Book added to favorites!", "success");
       } else {
         await axios.delete(
-          `http://192.168.1.188:5000/api/wishlist/remove/${bookId}`,
+          `https://ebooklibrarysystembackend-production.up.railway.app/api/wishlist/remove/${bookId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setWishlistIds((prev) => prev.filter((id) => id !== bookId));
